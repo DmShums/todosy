@@ -1,8 +1,9 @@
 """ Task model module """
 from peewee import CharField, ForeignKeyField, TextField, BooleanField, DateTimeField, DateField, TimeField, IntegerField
-from .basic_model import BaseModel
-from .group import Group
-from .user import User
+
+from server.models.basic_model import BaseModel
+from server.models.group import Group
+from server.models.user import User
 
 class Task(BaseModel):
     """ Task Model """

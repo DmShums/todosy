@@ -1,6 +1,6 @@
 """ User model module """
 from peewee import CharField
-from .basic_model import BaseModel
+from server.models.basic_model import BaseModel
 
 class User(BaseModel):
     """ User Model """
