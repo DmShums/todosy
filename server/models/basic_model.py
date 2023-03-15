@@ -3,7 +3,7 @@ from peewee import *
 db = MySQLDatabase(
     host='localhost',
     user='root',
-    password='11111111',
+    password='vashenko5398',
     database='todosy'
 )
 
