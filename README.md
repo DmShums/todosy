@@ -4,9 +4,14 @@
 
 ## Back-End
 
-Download [MySQL](https://www.mysql.com/) and install it. Start GUI or Terminal and create `todosy` database.
+Download [MySQL](https://www.mysql.com/) and install it. Start GUI or Terminal and create _todosy_ database. Here's a command for it to use:
+
+```sql
+CREATE DATABASE todosy;
+```
 
 Then open this folder in Terminal and run
+
 ```cmd
 python3 -m venv venv
 source/bin/activate
@@ -14,7 +19,17 @@ source/bin/activate
 pip3 install -r requirements.txt
 ```
 
-Change info in .env file and start
+Create in the root of project and change information in _.env_ file. It looks like:
+
+```env
+DB_HOST=127.0.0.1
+DB_USER=root
+DB_PASSWORD=11111111
+DB_DATABASE=todosy
+```
+
+And start project
+
 ```cmd
 python3 main.py
 ```
