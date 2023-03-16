@@ -9,3 +9,5 @@ class Group(BaseModel):
     title = CharField()
     color = CharField()
     owner = ForeignKeyField(User)
+
+var = "group.py"
