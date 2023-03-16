@@ -28,12 +28,17 @@ DB_PASSWORD=11111111
 DB_DATABASE=todosy
 ```
 
+Connect to Flask
+```cmd
+set FLASK_APP=main.py
+flask run
+```
+
 And start project
 
 ```cmd
 python3 main.py
 ```
-
 ### Front-end
 
 Go to [Node.js](https://nodejs.org/en/) and download latest LTS version. Run and install it.
