@@ -14,7 +14,7 @@ Then open this folder in Terminal and run
 
 ```cmd
 python3 -m venv venv
-source/bin/activate
+source venv/bin/activate
 
 pip3 install -r requirements.txt
 ```
