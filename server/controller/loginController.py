@@ -1,12 +1,9 @@
-import sys
-sys.path.append("..")
-from models.user import User
-from models.basic_model import db
-from controller.registrationController import app
-import re
-from flask import Flask, render_template, request
+# import sys
+# sys.path.append("..")
+from server.models.user import User
+from main import app
+from flask import render_template, request
 
-db.connect()
 # app = Flask(__name__)
 @app.route('/login', methods =['GET', 'POST'])
 def login():
@@ -22,6 +19,6 @@ def login():
         else:
             mesage = 'Wrong email or password!'
             print('Wrong email or password!')
-    return render_template('login.html', mesage = mesage)
+    return render_template('login.html', message = mesage)
 
-app.run(debug=True)
+# app.run(debug=True)

@@ -1,15 +1,10 @@
-import sys
-sys.path.append("..")
-from models.group import Group
-from models.task import Task
-from models.user import User
-from models.basic_model import db
-import re
-from flask import Flask, render_template, request
+# import sys
+# sys.path.append("..")
+from server.models.group import Group
+from server.models.user import User
+from main import app
+from flask import render_template, request
 
-db.connect()
-app = Flask(__name__)
-@app.route('/')
 @app.route('/register', methods =['GET', 'POST'])
 def register():
     mesage = ''
@@ -22,11 +17,10 @@ def register():
         query = User.select().where(User.email == user_email)
         print(query)
         if not query.exists():
-            user = User.create(email=user_email, name=user_name, surname=user_surname, password=user_password)
+            user = User.create(email=user_email, name=user_name,\
+                                surname=user_surname, password=user_password)
             group = Group.create(title="aaa", color="red", owner=user.id)
             mesage = 'You have successfully registered !'
         else:
             mesage = 'Email already in use!'
-    return render_template('register.html', mesage = mesage)
-
-app.run(debug=True)
+    return render_template('register.html', message = mesage)
