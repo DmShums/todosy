@@ -1,6 +1,7 @@
 const path = require('path')
 const MiniCssExtractPlugin = require(`mini-css-extract-plugin`);
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: [
@@ -12,7 +13,7 @@ module.exports = {
     path: path.resolve(__dirname, 'client')
   },
   devServer: {
-    port: 8081,
+    port: 8080,
     hot: true,
     watchFiles: ['./src/**/*']
   },
@@ -54,6 +55,13 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: "register.html",
       template: './src/templates/register.html'
-    })
+    }),
+    new CopyWebpackPlugin({
+        patterns: [
+          { from: `./src/static/fonts`, to: `./fonts` },
+          { from: `./src/static/images`, to: `./images` },
+          { from: `./src/static/favicon`, to: `./` }
+        ]
+    }),
   ]
 }

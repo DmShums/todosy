@@ -1,1 +1,194 @@
-index
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600,700&display=swap" rel="stylesheet">
+    <link type="stylesheet" href="./client/css/style.bundle.css">
+    <title>Todosy</title>
+</head>
+<body>
+    <header class="header">
+        Todosy
+    </header>
+
+    <main class="main">
+        <section class="table">
+            <div class="table__headings">
+                <div class="table__heading">6 Monday</div>
+                <div class="table__heading">7 Tuesday</div>
+                <div class="table__heading">8 Wednesday</div>
+                <div class="table__heading table__heading--today">9 Today</div>
+                <div class="table__heading">10 Friday</div>
+                <div class="table__heading">11 Saturday</div>
+                <div class="table__heading">12 Sunday</div>
+            </div>
+
+            <div class="table__tasks">
+                <div class="table__date-tasks">
+                    <article class="task">
+                        <div class="task__heading-wrapper">
+                            <h3 class="task__heading">Task name</h3>
+                        </div>
+                        <div class="task__data">
+                            <p class="task__info task__deadline">Deadline: hh:mm</p>
+                        </div>
+                    </article>
+                    <article class="task">
+                        <div class="task__heading-wrapper">
+                            <h3 class="task__heading">Task name</h3>
+                        </div>
+                        <div class="task__data">
+                            <p class="task__info task__deadline">Deadline: hh:mm</p>
+                        </div>
+                    </article>
+                </div>
+                <div class="table__date-tasks">
+                    <article class="task">
+                        <div class="task__heading-wrapper">
+                            <h3 class="task__heading">Task name</h3>
+                        </div>
+                        <div class="task__data">
+                            <p class="task__info task__deadline">Deadline: hh:mm</p>
+                        </div>
+                    </article>
+                </div>
+                <div class="table__date-tasks">
+                    <article class="task">
+                        <div class="task__heading-wrapper">
+                            <h3 class="task__heading">Task name</h3>
+                        </div>
+                        <div class="task__data">
+                            <p class="task__info task__deadline">Deadline: hh:mm</p>
+                        </div>
+                    </article>
+                </div>
+                <div class="table__date-tasks"></div>
+                <div class="table__date-tasks">
+                    <article class="task">
+                        <div class="task__heading-wrapper">
+                            <h3 class="task__heading">Task name</h3>
+                        </div>
+                        <div class="task__data">
+                            <p class="task__info task__deadline">Deadline: hh:mm</p>
+                        </div>
+                    </article>
+                    <article class="task">
+                        <div class="task__heading-wrapper">
+                            <h3 class="task__heading">Task name</h3>
+                        </div>
+                        <div class="task__data">
+                            <p class="task__info task__deadline">Deadline: hh:mm</p>
+                        </div>
+                    </article>
+                    <article class="task">
+                        <div class="task__heading-wrapper">
+                            <h3 class="task__heading">Task name</h3>
+                        </div>
+                        <div class="task__data">
+                            <p class="task__info task__deadline">Deadline: hh:mm</p>
+                        </div>
+                    </article>
+                    <article class="task">
+                        <div class="task__heading-wrapper">
+                            <h3 class="task__heading">Task name</h3>
+                        </div>
+                        <div class="task__data">
+                            <p class="task__info task__deadline">Deadline: hh:mm</p>
+                        </div>
+                    </article>
+                    <article class="task">
+                        <div class="task__heading-wrapper">
+                            <h3 class="task__heading">Task name</h3>
+                        </div>
+                        <div class="task__data">
+                            <p class="task__info task__deadline">Deadline: hh:mm</p>
+                        </div>
+                    </article>
+                    <article class="task">
+                        <div class="task__heading-wrapper">
+                            <h3 class="task__heading">Task name</h3>
+                        </div>
+                        <div class="task__data">
+                            <p class="task__info task__deadline">Deadline: hh:mm</p>
+                        </div>
+                    </article>
+                    <article class="task">
+                        <div class="task__heading-wrapper">
+                            <h3 class="task__heading">Task name</h3>
+                        </div>
+                        <div class="task__data">
+                            <p class="task__info task__deadline">Deadline: hh:mm</p>
+                        </div>
+                    </article>
+                </div>
+                <div class="table__date-tasks">
+                    <article class="task">
+                        <div class="task__heading-wrapper">
+                            <h3 class="task__heading">Task name</h3>
+                        </div>
+                        <div class="task__data">
+                            <p class="task__info task__deadline">Deadline: hh:mm</p>
+                        </div>
+                    </article>
+                </div>
+                <div class="table__date-tasks"></div>
+            </div>
+        </section>
+
+        <section class="controllers">
+            <div class="controllers__week">
+                <button class="controllers__week-btn controllers__week-prev">
+                    <img src="./images/prev.svg" alt="Next week">
+                </button>
+                <p class="controllers__week-text">March 6 - March 12</p>
+                <button class="controllers__week-btn controllers__week-next">
+                    <img src="./images/next.svg" alt="Next week">
+                </button>
+            </div>
+            <div class="controllers__balance-wrapper">
+                <div class="controllers__balance"></div>
+            </div>
+        </section>
+    </main>
+
+    <template id="create-form">
+        <form id="create-task" class="task">
+            <div class="task__heading-wrapper">
+                <input type="text" placeholder="Task name" required class="task-name" name="name">
+            </div>
+
+            <div class="task__data">
+                <div class="task__info">
+                    <label for="group-select" class="task__data-text">Group:</label>
+                    <select name="group" id="group-select" name="group-select">
+                        <option value="">select group</option>
+                        <option value="dog">Dog</option>
+                        <option value="cat">Cat</option>
+                        <option value="hamster">Hamster</option>
+                        <option value="parrot">Parrot</option>
+                        <option value="spider">Spider</option>
+                        <option value="goldfish">Goldfish</option>
+                    </select>
+                    
+                </div>
+                <div class="task__info">
+                    <label for="start" class="task__data-text">Start time:</label>
+                    <input type="time" name="start" id="start" class="task-time" required>
+                </div>
+                <div class="task__info">
+                    <label for="deadline" class="task__data-text">Deadline:</label>
+                    <input type="time" name="deadline" id="deadline" class="task-time" required>
+                </div>
+            </div>
+
+            <button class="task__footer" type="submit">
+                Create
+            </button>
+        </form>
+    </template>
+</body>
+</html>
