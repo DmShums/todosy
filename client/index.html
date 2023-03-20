@@ -137,9 +137,15 @@
          </section>
          <section class="controllers">
             <div class="controllers__week">
-               <button class="controllers__week-btn controllers__week-prev"><img src="./images/prev.svg" alt="Next week"></button>
+               <button class="controllers__week-btn controllers__week-prev"><svg width="28" height="33" viewBox="0 0 28 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M-8.08661e-07 16.5L27.75 0.47853L27.75 32.5215L-8.08661e-07 16.5Z" fill="#534D49"/>
+                  </svg>
+                  </button>
                <p class="controllers__week-text">March 6 - March 12</p>
-               <button class="controllers__week-btn controllers__week-next"><img src="./images/next.svg" alt="Next week"></button>
+               <button class="controllers__week-btn controllers__week-next"><svg width="28" height="33" viewBox="0 0 28 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M28 16.5L0.250005 32.5215L0.25 0.478535L28 16.5Z" fill="#534D49"/>
+                  </svg>
+                  </button>
             </div>
             <div class="controllers__balance-wrapper">
                <div class="controllers__balance"></div>
@@ -147,12 +153,12 @@
          </section>
       </main>
       <template id="create-form">
-         <form id="create-task" class="task">
-            <div class="task__heading-wrapper"><input placeholder="Task name" required class="task-name" name="name"></div>
+         <form action = "/calendar" id="create-task" class="task" method="post">
+            <div class="task__heading-wrapper"><input placeholder="Task name" required class="task-name" name="task_name"></div>
             <div class="task__data">
                <div class="task__info">
                   <label for="group-select" class="task__data-text">Group:</label> 
-                  <select name="group" id="group-select" name="group-select">
+                  <select name="group" id="group-select" name="group_select">
                      <option value="">select group</option>
                      <option value="dog">Dog</option>
                      <option value="cat">Cat</option>
