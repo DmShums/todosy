@@ -56,12 +56,12 @@ module.exports = {
       filename: "register.html",
       template: './src/templates/register.html'
     }),
-    new CopyWebpackPlugin({
-        patterns: [
-          { from: `./src/static/fonts`, to: `./fonts` },
-          { from: `./src/static/images`, to: `./images` },
-          { from: `./src/static/favicon`, to: `./` }
-        ]
-    }),
+    // new CopyWebpackPlugin({
+    //     patterns: [
+    //       { from: `./src/static/fonts`, to: `./fonts` },
+    //       { from: `./src/static/images`, to: `./images` },
+    //       { from: `./src/static/favicon`, to: `./` }
+    //     ]
+    // }),
   ]
 }

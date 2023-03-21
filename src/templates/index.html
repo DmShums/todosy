@@ -141,11 +141,17 @@
         <section class="controllers">
             <div class="controllers__week">
                 <button class="controllers__week-btn controllers__week-prev">
-                    <img src="./images/prev.svg" alt="Next week">
+                    <p class="visually-hidden">Prev button</p>
+                    <svg width="28" height="33" viewBox="0 0 28 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M-8.08661e-07 16.5L27.75 0.47853L27.75 32.5215L-8.08661e-07 16.5Z" fill="#534D49"/>
+                    </svg>
                 </button>
                 <p class="controllers__week-text">March 6 - March 12</p>
                 <button class="controllers__week-btn controllers__week-next">
-                    <img src="./images/next.svg" alt="Next week">
+                    <p class="visually-hidden">Next button</p>
+                    <svg width="28" height="33" viewBox="0 0 28 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M28 16.5L0.250005 32.5215L0.25 0.478535L28 16.5Z" fill="#534D49"/>
+                    </svg>
                 </button>
             </div>
             <div class="controllers__balance-wrapper">
@@ -155,7 +161,7 @@
     </main>
 
     <template id="create-form">
-        <form id="create-task" class="task">
+        <form id="create-task" class="task__create">
             <div class="task__heading-wrapper">
                 <input type="text" placeholder="Task name" required class="task-name" name="name">
             </div>
@@ -188,6 +194,29 @@
                 Create
             </button>
         </form>
+    </template>
+
+    <template id="create-group">
+        <form id="create-group" class="task__create">
+            <div class="task__heading-wrapper">
+                <input placeholder="Group name" required class="task-name" name="group">
+            </div>
+            <div class="task__data">
+               <div class="task__info">
+                  <label for="group-select" class="task__data-text">Class:</label> 
+                  <select name="class" id="class-select" name="group-select">
+                     <option value="">Leisure/work</option>
+                     <option value="leisure">Leisure</option>
+                     <option value="work">Word</option>
+                  </select>
+               </div>
+               <div class="task__info">
+                    <label for="coror" class="task__data-text">Color:</label>
+                    <input type="color" name="color" id="color" class="task-time" value="#e66465">
+                </div>
+            </div>
+            <button class="task__footer" type="submit">Create</button>
+         </form>
     </template>
 </body>
 </html>
