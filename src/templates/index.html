@@ -178,15 +178,23 @@
                         <option value="spider">Spider</option>
                         <option value="goldfish">Goldfish</option>
                     </select>
-                    
                 </div>
                 <div class="task__info">
+                    <!-- checkbox -->
+                    <label for="group-select" class="task__data-text">Class:</label> 
+                    <select name="class" id="class-select" name="group-select">
+                       <option value="">Leisure/work</option>
+                       <option value="leisure">Leisure</option>
+                       <option value="work">Word</option>
+                    </select>
+                 </div>
+                <div class="task__info">
                     <label for="start" class="task__data-text">Start time:</label>
-                    <input type="time" name="start" id="start" class="task-time" required>
+                    <input type="time" name="start" id="start" class="task-time">
                 </div>
                 <div class="task__info">
                     <label for="deadline" class="task__data-text">Deadline:</label>
-                    <input type="time" name="deadline" id="deadline" class="task-time" required>
+                    <input type="time" name="deadline" id="deadline" class="task-time">
                 </div>
             </div>
 
@@ -202,14 +210,6 @@
                 <input placeholder="Group name" required class="task-name" name="group">
             </div>
             <div class="task__data">
-               <div class="task__info">
-                  <label for="group-select" class="task__data-text">Class:</label> 
-                  <select name="class" id="class-select" name="group-select">
-                     <option value="">Leisure/work</option>
-                     <option value="leisure">Leisure</option>
-                     <option value="work">Word</option>
-                  </select>
-               </div>
                <div class="task__info">
                     <label for="coror" class="task__data-text">Color:</label>
                     <input type="color" name="color" id="color" class="task-time" value="#e66465">
