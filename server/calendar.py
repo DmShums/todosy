@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, url_for, request, flash
+from flask import Blueprint, render_template, url_for, request, flash, jsonify
 from server.models.task import Task
 
 calendar_bp = Blueprint('index', __name__)
@@ -7,18 +7,24 @@ calendar_bp = Blueprint('index', __name__)
 @calendar_bp.route('/calendar')
 def calendar(methods = ['GET', 'POST']):
     if request.method == 'POST':
-        task_name = request.form.get("task_name")
-        flash(task_name)
-        group_name = request.form.get("group_name")
+        title = request.form.get("title")
+        group_id = request.form.get("group_id")
         start = request.form.get("start")
-        deadline = request.form.get("deadline")
-        task = Task.create(title = task_name,
+        is_work = request.form.get("is_work")
+        end_time = request.form.get("end_time")
+        end_date = request.form.get("end_date")
+
+        overall = None
+        if start and end_time:
+            overall = end_time - start
+        task = Task.create(title = title,
                            description = None,
                            owner = None,
-                           is_work = False,
-                           group = group_name,
+                           is_work = is_work,
+                           group = group_id,
                            start_dare = start,
-                           end_date = deadline,
-                           end_time = None,
-                           overall = None)
+                           end_date = end_date,
+                           end_time = end_time,
+                           overall = overall)
+        return jsonify(task)
     return render_template('index.html')
