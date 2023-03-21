@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, url_for, request, flash, jsonify
+from flask import Blueprint, render_template, url_for, request, jsonify
 from server.models.task import Task
 from playhouse.shortcuts import model_to_dict, dict_to_model
 
@@ -11,7 +11,6 @@ def calendar():
 
 @calendar_bp.route('/calendar/create', methods = ['POST'])
 def calendar_create():
-    if request.headers.autherization.split(" ")[1]
     data = request.json
     title = data.get("title")
     group_id = data.get("group_id")
