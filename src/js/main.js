@@ -1,31 +1,51 @@
 import 'normalize.css'
 
 const createFormTemplate = document.querySelector('#create-form');
-const columns = document.querySelectorAll('.table__date-tasks');
+const createGroupTemplate = document.querySelector('#create-group');
 
+const columns = document.querySelectorAll('.table__date-tasks');
 const tasks = document.querySelectorAll('.task');
 
+const deleteBySelector = (selector) => {
+    const prevCreate = document.querySelector(selector);
+
+    if (prevCreate) {
+        prevCreate.parentElement.removeChild(prevCreate);
+    }
+}
+
 columns.forEach((column) => {
-    console.log(column.classList.value)
-
     column.addEventListener('click', (event) => {
-        const eventClass = event.target.classList.value;
-
-        if (eventClass != column.classList.value) {
+        if (!event.target.isSameNode(column)) {
             return;
         }
 
         event.preventDefault();
-        const prevCreate = document.querySelector('#create-task');
-
-        if (prevCreate) {
-            prevCreate.parentElement.removeChild(prevCreate);
-        }
+        deleteBySelector('#create-task');
         
         const createForm = createFormTemplate.content.cloneNode(true);
         column.appendChild(createForm);
     });
+
+    column.addEventListener('contextmenu', (event) => {
+        if (!event.target.isSameNode(column)) {
+            return;
+        }
+
+        event.preventDefault();
+        deleteBySelector('#create-group');
+
+        const createGroup = createGroupTemplate.content.cloneNode(true);
+        column.appendChild(createGroup);
+    });
 });
+
+document.addEventListener('keydown', (event) => {
+    if (event.key == 'Escape') {
+        deleteBySelector('#create-group');
+        deleteBySelector('#create-task');
+    }
+})
 
 tasks.forEach((task) => {
     task.addEventListener('click', (event) => {
