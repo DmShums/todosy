@@ -49,7 +49,7 @@ def calendar_create():
 def calendar_get():
     data = request.args
 
-    id = data.get(п'id')
+    id = data.get('id')
     week = data.get('week')
 
     dt = datetime.fromtimestamp(int(week) / 1000)
