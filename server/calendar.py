@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, url_for, request, flash, jsonify
+from flask import Blueprint, render_template, url_for, request, jsonify
 from server.models.task import Task
 from server.models.group import Group
 
@@ -21,11 +21,12 @@ def calendar_task_create():
     overall = None
     if start and end_time:
         overall = end_time - start
+
     task = Task.create(title = title,
-                        description = None,
-                        owner = None,
+                        description = '123',
+                        owner = 1,
                         is_work = is_work,
-                        group = group_id,
+                        group = 1,
                         start_date = start,
                         end_date = end_date,
                         end_time = end_time,

@@ -1,7 +1,7 @@
 const path = require('path')
 const MiniCssExtractPlugin = require(`mini-css-extract-plugin`);
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+// const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: [
@@ -16,6 +16,9 @@ module.exports = {
     port: 8080,
     hot: true,
     watchFiles: ['./src/**/*']
+  },
+  optimization: {
+    minimize: false
   },
   module: {
     rules: [
