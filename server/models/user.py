@@ -4,7 +4,6 @@ from server.models.basic_model import BaseModel
 
 class User(BaseModel):
     """ User Model """
+    nickname = CharField()
     email = CharField(unique=True)
-    name = CharField()
-    surname = CharField()
     password = CharField()
