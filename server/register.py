@@ -1,5 +1,6 @@
 """Register module"""
 # import server.db
+import peewee
 from flask import Flask, render_template, request, url_for, jsonify
 from server.models.user import User
 from playhouse.shortcuts import model_to_dict
@@ -18,11 +19,15 @@ def register():
         user_password = hash_password(request.form.get("password"))
 
         # save data to database
-        user = User.create(
-            nickname = user_nickname,
-            email = user_email,
-            password = user_password
-        )
+        try:
+            user = User.create(
+                nickname = user_nickname,
+                email = user_email,
+                password = user_password
+            )
+        except peewee.IntegrityError:
+            # add alert
+            return render_template('register.html')
 
         user = model_to_dict(user)
 
