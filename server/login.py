@@ -21,29 +21,14 @@ def login():
     if request.method == "POST":
         user_email = request.form.get("email")
         user_password = hash_password(request.form.get("password"))
-        # save data to database
-        print('hashed')
-        print(user_password)
-        print('')
-        # user = model_to_dict(user)
 
         try:
             user = User.get(User.email == user_email)
             print(user.password)
             # server.models.user.UserDoesNotExist: <Model: User> instance matching query does not exist:
-
         except Exception:
             return "there is no use with this email"
-        
 
-
-        # user = User.select().where(User.email == user_email).get()
-
-        # user = User.select()
-        # print(user)
-
-        # print(user_password)
-        # print(user)
         return json.dumps(user, default=str)
 
     if request.method == "GET":
@@ -66,11 +51,3 @@ def hash_password(pswrd):
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-app.run(debug=True)
-
-
-
-#import server.controller.registrationController
-#import server.controller.loginController
-app.run(debug=True)
