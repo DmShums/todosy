@@ -41,7 +41,7 @@ def calendar_task_create():
                 end_time = end_time,
                 overall = overall)
 
-    result = model_to_dict(task)
+    result =  model_to_dict(task, recurse=False)
 
     return json.dumps(result, default=str)
 
