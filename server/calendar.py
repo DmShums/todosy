@@ -8,7 +8,7 @@ import json
 
 calendar_bp = Blueprint('index', __name__)
 
-@calendar_bp.route('/', methods = ['GET'])
+# @calendar_bp.route('/', methods = ['GET'])
 @calendar_bp.route('/calendar', methods = ['GET'])
 def calendar():
     return render_template('index.html')
