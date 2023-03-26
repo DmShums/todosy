@@ -1,5 +1,5 @@
 import json
-from datetime import timedelta
+from  datetime import datetime, timedelta
 
 from flask import Blueprint, render_template, url_for, request
 from playhouse.shortcuts import model_to_dict
@@ -63,6 +63,12 @@ def calendar_group_create():
 @calendar_bp.route('/calendar/task/get/<date_day>', methods=['GET'])
 def get_tasks(date_day : str):
     if date_day:
-        # date_format = datetime.strptime(date_day, '%Y-%m-%d')
-        query = Task.select().where(str(Task.end_date) == date_day).execute()
+        date_format = datetime.strptime(date_day, '%Y-%m-%d')
+        local_date = date_format - timedelta(days=7)
+
+        while local_date.weekday() != 0:
+            local_date += timedelta(days=1)
+
+        weekday_date_list = [local_date + timedelta(days=x) for x in range(7)]
+        query = [[week_date, Task.select().where(str(Task.end_date) == date_day).execute()] for week_date in weekday_date_list]
         print([model_to_dict(x) for x in query])

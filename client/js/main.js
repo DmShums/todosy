@@ -53,7 +53,7 @@ columns.forEach((column) => {
             };
 
             console.log(data)
-            console.log(sendAPI(`/calendar/create`, "POST", data))
+            console.log(sendAPI(`/calendar/task/create`, "POST", data))
         });
         column.appendChild(createForm);
     });

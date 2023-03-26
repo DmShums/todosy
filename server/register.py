@@ -30,6 +30,7 @@ def register_post():
 
     return json.dumps({"message": "Success", "user": user}, default=str), 201
 
+@register_bp.route('/', methods=['GET'])
 @register_bp.route('/register', methods=['GET'])
 def register():
     return render_template('register.html')
