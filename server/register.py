@@ -1,51 +1,35 @@
 """Register module"""
 # import server.db
-import peewee
-from flask import Flask, render_template, request, url_for, jsonify, Blueprint
-from server.models.user import User
-from playhouse.shortcuts import model_to_dict
-import hashlib
 import json
 
+from peewee import IntegrityError
+from flask import render_template, request, url_for, Blueprint
+
+from server.models.user import User
+from server.utils import hash_password
+
 register_bp = Blueprint('register', __name__)
-# app = Flask(__name__, template_folder='../src/templates', static_folder='../src/')
 
-@register_bp.route('/', methods=['POST', 'GET'])
-@register_bp.route('/register', methods=['POST', 'GET'])
+@register_bp.route('/register', methods=['POST'])
+def register_post():
+    body = request.json
+
+    user_nickname = body.get("nickname")
+    user_email = body.get("email")
+    user_password = hash_password(body.get("password"))
+
+    # save data to database
+    try:
+        user = User.create(
+            nickname = user_nickname,
+            email = user_email,
+            password = user_password
+        )
+    except IntegrityError:
+        return json.dumps({'message': "User with the same email already exist."}), 409
+
+    return json.dumps({"message": "Success", "user": user}, default=str), 201
+
+@register_bp.route('/register', methods=['GET'])
 def register():
-    if request.method == "POST":
-        user_nickname = request.form.get("nickname")
-        user_email = request.form.get("email")
-        user_password = hash_password(request.form.get("password"))
-
-        # save data to database
-        try:
-            user = User.create(
-                nickname = user_nickname,
-                email = user_email,
-                password = user_password
-            )
-        except peewee.IntegrityError:
-            # add alert
-            return render_template('register.html')
-
-        user = model_to_dict(user)
-
-        return render_template('index.html')
-
-    if request.method == "GET":
-        return render_template('register.html')
-
-
-def hash_password(pswrd):
-    # Declaring Password
-    password = pswrd
-    # adding 5gz as password
-    salt = "5gz"
-    # Adding salt at the last of the password
-    dataBase_password = password+salt
-    # Encoding the password
-    hashed = hashlib.md5(dataBase_password.encode())
-
-    # Printing the Hash
-    return hashed.hexdigest()
+    return render_template('register.html')

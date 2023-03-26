@@ -1,49 +1,33 @@
 '''
 Login module.
 '''
-import server.db
-from flask import Flask, render_template, request, Blueprint
-
-
-# import server.db
-from flask import Flask, render_template, request, url_for, jsonify
-from server.models.user import User
-from playhouse.shortcuts import model_to_dict
-import hashlib
 import json
 
+from flask import render_template, request, Blueprint, url_for
+
+from server.models.user import User
+from server.utils import hash_password
+
 login_bp = Blueprint('login', __name__)
-# app = Flask(__name__, template_folder='../src/templates', static_folder='../src/static')
+
+@login_bp.route('/login', methods=['POST'])
+def login_post():
+    body = request.json
+
+    user_email = body.get("email")
+    user_password = hash_password(body.get("password"))
+
+    try:
+        user = User.get(User.email == user_email)
+
+        if user_password == user.password:
+            return json.dumps({"user": user}, default=str), 200
+
+        return json.dumps({"message": "Wrong password"}), 403
+    except Exception:
+        return json.dumps({"message": "there is no user with this email"}), 404
 
 
-@login_bp.route('/login', methods=['POST', 'GET'])
+@login_bp.route('/login', methods=['GET'])
 def login():
-    if request.method == "POST":
-        user_email = request.form.get("email")
-        user_password = hash_password(request.form.get("password"))
-
-        try:
-            user = User.get(User.email == user_email)
-            print(user.password)
-            # server.models.user.UserDoesNotExist: <Model: User> instance matching query does not exist:
-        except Exception:
-            return "there is no use with this email"
-
-        return json.dumps(user, default=str)
-
-    if request.method == "GET":
-        return render_template('login.html')
-
-
-def hash_password(pswrd):
-    # Declaring Password
-    password = pswrd
-    # adding 5gz as password
-    salt = "5gz"
-    # Adding salt at the last of the password
-    dataBase_password = password+salt
-    # Encoding the password
-    hashed = hashlib.md5(dataBase_password.encode())
-
-    # Printing the Hash
-    return hashed.hexdigest()
+    return render_template('login.html')

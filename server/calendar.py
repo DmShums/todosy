@@ -1,19 +1,19 @@
-from flask import Blueprint, render_template, url_for, request, jsonify
+import json
+from datetime import timedelta
+
+from flask import Blueprint, render_template, url_for, request
+from playhouse.shortcuts import model_to_dict
+
 from server.models.task import Task
 from server.models.group import Group
-from playhouse.shortcuts import model_to_dict, dict_to_model
-from datetime import datetime, timedelta, date
-from pprint import pprint
-import json
 
 calendar_bp = Blueprint('index', __name__)
 
-# @calendar_bp.route('/', methods = ['GET'])
-@calendar_bp.route('/calendar', methods = ['GET'])
+@calendar_bp.route('/calendar', methods=['GET'])
 def calendar():
     return render_template('index.html')
 
-@calendar_bp.route('/calendar/task/create', methods = ['POST'])
+@calendar_bp.route('/calendar/task/create', methods=['POST'])
 def calendar_task_create():
     data = request.json
 
@@ -60,9 +60,9 @@ def calendar_group_create():
     result = model_to_dict(group)
     return json.dumps(result, default=str)
 
-@calendar_bp.route('/calendar/task/get/<date_day>', methods = ['GET'])
+@calendar_bp.route('/calendar/task/get/<date_day>', methods=['GET'])
 def get_tasks(date_day : str):
-    if date_day :
+    if date_day:
         # date_format = datetime.strptime(date_day, '%Y-%m-%d')
         query = Task.select().where(str(Task.end_date) == date_day).execute()
         print([model_to_dict(x) for x in query])

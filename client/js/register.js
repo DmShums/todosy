@@ -1,20 +1,51 @@
- // Fetch all the forms we want to apply custom Bootstrap validation styles to
- var forms = document.querySelectorAll('.needs-validation')
+window.addEventListener('load', () => {
+    const LOCAL_STORAGE_CELL = 'user'
 
- // Loop over them and prevent submission
- Array.prototype.slice.call(forms)
-     .forEach(function (form) {
-     form.addEventListener('submit', function (event) {
-         let pswrd = document.getElementById('pass').value
-         let pswrd_confirm = document.getElementById('confirm-pass').value
-         let form = document.getElementById('form')
-         if (pswrd != pswrd_confirm){
-             event.preventDefault()
-             event.stopPropagation()
-         }
+    if (localStorage.getItem(LOCAL_STORAGE_CELL)) {
+        window.location.replace("/");
+    }
 
-         // fetch()
+    const form = document.querySelector('.needs-validation')
+    const pswrd = document.getElementById('password');
+    const pswrd_confirm = document.getElementById('confirm-pass');
 
-         form.classList.add('was-validated')
-     }, false)
-     })
+    const sendAPI = async (url, method, body) => {
+        return await fetch(url, {
+            method,
+            headers: {
+                "Content-Type": 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+    };
+
+    form.addEventListener('submit', async (event) => {
+        if (pswrd.value != pswrd_confirm.value) {
+            pswrd_confirm.setCustomValidity("Passwords do not match.");
+        }
+
+        if (!form.checkValidity()) {
+            return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const nickname = form.querySelector('#nickname').value;
+        const email = form.querySelector('#email').value;
+        const password = form.querySelector('#password').value;
+
+        form.classList.add('was-validated');
+
+        result = await sendAPI('/register', "POST", {nickname, email, password});
+        response = await result.json();
+
+        if (result.ok) {
+            localStorage.setItem(LOCAL_STORAGE_CELL, response.user);
+            window.location.replace("/calendar");
+            return;
+        }
+        
+        alert(response.message);
+    });
+});
