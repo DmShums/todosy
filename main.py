@@ -9,4 +9,4 @@ app = Flask(__name__, template_folder='./client', static_folder='./client')
 app.register_blueprint(calendar_bp)
 
 if __name__ == "__main__":
-    app.run(port=5050, debug=True)
+    app.run(debug=True, port=5050)

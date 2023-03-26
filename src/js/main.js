@@ -14,6 +14,17 @@ const deleteBySelector = (selector) => {
     }
 }
 
+const sendAPI = async (url, method, body) => {
+    const response = await fetch(url, {
+        method,
+        headers: {
+            "Content-Type": 'application/json'
+        },
+        body: JSON.stringify(body)
+    });
+    return await response.json();
+}
+
 columns.forEach((column) => {
     column.addEventListener('click', (event) => {
         if (!event.target.isSameNode(column)) {
@@ -24,6 +35,22 @@ columns.forEach((column) => {
         deleteBySelector('#create-task');
         
         const createForm = createFormTemplate.content.cloneNode(true);
+        createForm.querySelector('form').addEventListener('submit', (evt) => {
+            evt.preventDefault();
+            const target = evt.target;
+            
+            const data = {
+                "title": target.querySelector('#task-title').value,
+                "group_id": target.querySelector('#group-select').value,
+                "is_work": target.querySelector("#is_work").value === 'on',
+                "start": target.querySelector("#start").value || Date.now(),
+                "end_date": '111111',
+                "end_time": target.querySelector("#deadline").value || null,
+            };
+
+            console.log(data)
+            console.log(sendAPI(`/calendar/create`, "POST", data))
+        });
         column.appendChild(createForm);
     });
 
