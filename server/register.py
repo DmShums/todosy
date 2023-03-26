@@ -31,7 +31,7 @@ def register():
 
         user = model_to_dict(user)
 
-        return json.dumps(user, default=str)
+        return render_template('index.html')
 
     if request.method == "GET":
         return render_template('register.html')
