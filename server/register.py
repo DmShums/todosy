@@ -4,8 +4,10 @@ from flask import Flask, render_template, request, url_for, jsonify
 from server.models.user import User
 from playhouse.shortcuts import model_to_dict
 import hashlib
+import json
 
-app = Flask(__name__, template_folder='../src/templates', static_folder='../src/static')
+
+app = Flask(__name__, template_folder='../src/templates', static_folder='../src/')
 
 
 @app.route('/register', methods=['POST', 'GET'])
@@ -14,8 +16,7 @@ def register():
         user_nickname = request.form.get("nickname")
         user_email = request.form.get("email")
         user_password = hash_password(request.form.get("password"))
-        # user_confirm_password = request.form.get("confirm_password")
-        print(user_password)
+
         # save data to database
         user = User.create(
             nickname = user_nickname,
@@ -25,7 +26,7 @@ def register():
 
         user = model_to_dict(user)
 
-        return jsonify(user)
+        return json.dumps(user, default=str)
 
     if request.method == "GET":
         return render_template('register.html')

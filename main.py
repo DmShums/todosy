@@ -1,5 +1,3 @@
-from server.register import *
 import server.db
+from server.register import *
 
-
-# print(register())
