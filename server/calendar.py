@@ -23,6 +23,7 @@ def calendar_task_create():
     is_work = data.get("is_work")
     end_time = data.get("end_time")
     end_date = data.get("end_date")
+    owner = data.get("owner")
 
     overall = None
     if start and end_time:
@@ -31,9 +32,11 @@ def calendar_task_create():
         overall = end_time - start_time
         overall = overall.seconds
 
+    print(owner)
+
     task = Task.create(title = title,
                 description = '123',
-                owner = 1,
+                owner = owner,
                 is_work = is_work,
                 group = group_id,
                 start_date = start,
@@ -43,7 +46,7 @@ def calendar_task_create():
 
     result =  model_to_dict(task, recurse=False)
 
-    return json.dumps(result, default=str)
+    return json.dumps(result, default=str), 201
 
 @calendar_bp.route('/calendar/group/create', methods = ['POST'])
 def calendar_group_create():
@@ -53,12 +56,12 @@ def calendar_group_create():
     color = data.get("color")
     owner = data.get("owner")
 
-    group = Group(title = title,
+    group = Group.create(title = title,
                   color = color,
                   owner = owner)
 
     result = model_to_dict(group)
-    return json.dumps(result, default=str)
+    return json.dumps(result, default=str), 201
 
 @calendar_bp.route('/calendar/task/get/<date_day>', methods=['GET'])
 def get_tasks(date_day : str):

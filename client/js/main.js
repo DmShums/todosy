@@ -1,10 +1,3 @@
-/******/ (() => { // webpackBootstrap
-/******/ 	"use strict";
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other entry modules.
-(() => {
-
-
 const createFormTemplate = document.querySelector('#create-form');
 const createGroupTemplate = document.querySelector('#create-group');
 
@@ -19,14 +12,14 @@ const deleteBySelector = (selector) => {
     }
 }
 
-const sendAPI = (url, method, body) => {
-    return fetch(url, {
+const sendAPI = async (url, method, body) => {
+    return await fetch(url, {
         method,
         headers: {
             "Content-Type": 'application/json'
         },
         body: JSON.stringify(body)
-    }).then((response) => response.json())
+    });
 }
 
 columns.forEach((column) => {
@@ -39,7 +32,7 @@ columns.forEach((column) => {
         deleteBySelector('#create-task');
         
         const createForm = createFormTemplate.content.cloneNode(true);
-        createForm.querySelector('form').addEventListener('submit', (evt) => {
+        createForm.querySelector('form').addEventListener('submit', async (evt) => {
             evt.preventDefault();
             const target = evt.target;
             
@@ -49,11 +42,16 @@ columns.forEach((column) => {
                 "is_work": target.querySelector("#is_work").value === 'on',
                 "start": target.querySelector("#start").value || Date.now(),
                 "end_date": '111111',
+                "owner": +localStorage.getItem("user"),
                 "end_time": target.querySelector("#deadline").value || null,
             };
 
-            console.log(data)
-            console.log(sendAPI(`/calendar/task/create`, "POST", data))
+            console.log(data);
+            response = await sendAPI(`/calendar/task/create`, "POST", data);
+
+            if (Math.floor(response.status / 100) == 2) {
+                deleteBySelector('#create-task');
+            }
         });
         column.appendChild(createForm);
     });
@@ -67,6 +65,24 @@ columns.forEach((column) => {
         deleteBySelector('#create-group');
 
         const createGroup = createGroupTemplate.content.cloneNode(true);
+
+        createGroup.querySelector('form').addEventListener('submit', async (evt) => {
+            evt.preventDefault();
+            const target = evt.target;
+            
+            const data = {
+                "title": target.querySelector('#group-title').value,
+                "color": target.querySelector("#group-color").value,
+                "owner": +localStorage.getItem("user"),
+            };
+
+            console.log(data);
+            response = await sendAPI(`/calendar/group/create`, "POST", data);
+            
+            if (Math.floor(response.status / 100) == 2) {
+                deleteBySelector('#create-group');
+            }
+        });
         column.appendChild(createGroup);
     });
 });
@@ -84,14 +100,3 @@ tasks.forEach((task) => {
         task.classList.toggle('task--edit');
     });
 });
-
-})();
-
-// This entry need to be wrapped in an IIFE because it need to be isolated against other entry modules.
-(() => {
-// extracted by mini-css-extract-plugin
-
-})();
-
-/******/ })()
-;

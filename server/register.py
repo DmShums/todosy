@@ -28,9 +28,8 @@ def register_post():
     except IntegrityError:
         return json.dumps({'message': "User with the same email already exist."}), 409
 
-    return render_template('index.html')
+    return json.dumps({'message':'Successfuly registered','user' : user})
 
-@register_bp.route('/', methods=['GET'])
 @register_bp.route('/register', methods=['GET'])
 def register():
     return render_template('register.html')
