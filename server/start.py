@@ -7,6 +7,6 @@ from flask import render_template, request, url_for, Blueprint
 
 start_bp = Blueprint('start', __name__)
 
-@start_bp.route('/start', methods=['GET'])
+@start_bp.route('/', methods=['GET'])
 def register():
-    return render_template('start.html')
+    return render_template('index.html')

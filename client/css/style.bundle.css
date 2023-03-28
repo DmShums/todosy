@@ -563,6 +563,9 @@ label {
     align-items: center;
     padding: 0 15px;
     margin: 0;
+    background-color: transparent;
+    border: 0;
+    color: #D4D4D4;
 }
 
 .controllers__balance-wrapper {

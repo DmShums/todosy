@@ -10,6 +10,7 @@ from server.utils import hash_password
 
 register_bp = Blueprint('register', __name__)
 
+
 @register_bp.route('/register', methods=['POST'])
 def register_post():
     body = request.json
@@ -21,14 +22,15 @@ def register_post():
     # save data to database
     try:
         user = User.create(
-            nickname = user_nickname,
-            email = user_email,
-            password = user_password
+            nickname=user_nickname,
+            email=user_email,
+            password=user_password
         )
     except IntegrityError:
         return json.dumps({'message': "User with the same email already exist."}), 409
 
-    return json.dumps({'user' : user.id})
+    return json.dumps({'user': user.id})
+
 
 @register_bp.route('/register', methods=['GET'])
 def register():

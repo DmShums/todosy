@@ -48,8 +48,8 @@ module.exports = {
       filename: `./css/style.bundle.css`
     }),
     new HtmlWebpackPlugin({
-      filename: "index.html",
-      template: './src/templates/index.html'
+      filename: "calendar.html",
+      template: './src/templates/calendar.html'
     }),
     new HtmlWebpackPlugin({
       filename: "login.html",

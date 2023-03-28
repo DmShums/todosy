@@ -2,7 +2,7 @@ window.addEventListener('load', () => {
     const LOCAL_STORAGE_CELL = 'user'
 
     if (localStorage.getItem(LOCAL_STORAGE_CELL)) {
-        window.location.replace("/");
+        window.location.replace("/calendar");
     }
 
     const form = document.querySelector('.needs-validation')
@@ -20,7 +20,7 @@ window.addEventListener('load', () => {
     };
 
     form.addEventListener('submit', async (event) => {
-        if (pswrd.value != pswrd_confirm.value) {
+        if (pswrd.value !== pswrd_confirm.value) {
             pswrd_confirm.setCustomValidity("Passwords do not match.");
         }
 
@@ -37,8 +37,8 @@ window.addEventListener('load', () => {
 
         form.classList.add('was-validated');
 
-        result = await sendAPI('/register', "POST", {nickname, email, password});
-        response = await result.json();
+        const result = await sendAPI('/register', "POST", {nickname, email, password});
+        const response = await result.json();
 
         if (result.ok) {
             console.log("success")
