@@ -2,7 +2,9 @@
 Login module.
 """
 import json
+import os
 
+import jwt
 from flask import render_template, request, Blueprint, url_for
 
 from server.models.user import User
@@ -22,10 +24,13 @@ def login_post():
         user = User.get(User.email == user_email)
 
         if user_password == user.password:
-            return json.dumps({"user": user}, default=str), 200
+            user_jwt = jwt.encode({"id": user.id}, os.environ.get("SECRET"), algorithm="HS256")
+            print(user_jwt)
+            return json.dumps({"user": user_jwt}, default=str), 200
 
         return json.dumps({"message": "Wrong password"}), 403
-    except Exception:
+    except Exception as e:
+        print(e)
         return json.dumps({"message": "there is no user with this email"}), 404
 
 

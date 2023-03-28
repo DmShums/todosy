@@ -1,6 +1,8 @@
 import json
+import os
 from datetime import datetime, timedelta
 
+import jwt
 from flask import Blueprint, render_template, url_for, request
 from playhouse.shortcuts import model_to_dict
 
@@ -71,7 +73,8 @@ def calendar_group_create():
 def get_tasks(date_day: str):
     if date_day:
         try:
-            owner = int(request.headers.get("Authorization").split(' ')[1])
+            jwt_code = request.headers.get("Authorization").split(' ')[1]
+            owner = jwt.decode(jwt_code, os.environ.get("SECRET"), algorithms=["HS256"])['id']
         except (ValueError, IndexError, AttributeError):
             return json.dumps({"message": "Authorization required"}), 403
 
@@ -91,14 +94,14 @@ def get_tasks(date_day: str):
                     day.append({
                         'end_date': task_dict['end_date'],
                         'end_time': task_dict['end_time'],
-                        'group': {
-                            'color': task_dict['group']['color'],
-                            'id': task_dict['group']['id'],
-                        },
                         'is_work': task_dict['is_work'],
                         'title': task_dict['title'],
                         'overall': task_dict['overall'],
                         'start_time': task_dict['start_time'],
+                        'group': {
+                            'color': task_dict['group']['color'],
+                            'id': task_dict['group']['id'],
+                        }
                     })
 
             query.append(day)

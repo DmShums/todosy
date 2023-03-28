@@ -1,7 +1,9 @@
 """Register module"""
 # import server.db
 import json
+import os
 
+import jwt
 from peewee import IntegrityError
 from flask import render_template, request, url_for, Blueprint
 
@@ -29,7 +31,8 @@ def register_post():
     except IntegrityError:
         return json.dumps({'message': "User with the same email already exist."}), 409
 
-    return json.dumps({'user': user.id})
+    user_jwt = jwt.encode({"id": user.id}, os.environ.get("SECRET"), algorithm="HS256")
+    return json.dumps({"user": user_jwt}, default=str), 201
 
 
 @register_bp.route('/register', methods=['GET'])

@@ -6,6 +6,12 @@ Date.prototype.isSameDateAs = function (pDate) {
   );
 }
 
+const LOCAL_STORAGE_CELL = 'user'
+
+if (!localStorage.getItem(LOCAL_STORAGE_CELL)) {
+    window.location.replace("/");
+}
+
 window.addEventListener('load', async () => {
     // Templates
     const taskTemplate = document.querySelector('#task-template');
