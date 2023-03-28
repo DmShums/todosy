@@ -116,7 +116,7 @@ window.addEventListener('load', () => {
                     "owner": +localStorage.getItem("user"),
                     "end_time": target.querySelector("#deadline").value || null,
                 };
-
+                
                 console.log(data);
                 const response = await sendAPI(`/calendar/task/create`, "POST", data);
 

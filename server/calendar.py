@@ -42,7 +42,7 @@ def calendar_task_create():
                        owner=owner,
                        is_work=is_work,
                        group=group_id,
-                       start_date=start,
+                       start_time=start_time,
                        end_date=end_date,
                        end_time=end_time,
                        overall=overall)
@@ -50,7 +50,6 @@ def calendar_task_create():
     result = model_to_dict(task, recurse=False)
 
     return json.dumps(result, default=str), 201
-
 
 @calendar_bp.route('/calendar/group/create', methods=['POST'])
 def calendar_group_create():
@@ -79,6 +78,9 @@ def get_tasks(date_day: str):
             local_date += timedelta(days=1)
 
         weekday_date_list = [local_date + timedelta(days=x) for x in range(7)]
-        query = [[week_date, Task.select().where((week_date == Task.end_date) & (Task.owner == owner)).get_or_none()]
-                 for week_date in weekday_date_list]
-        pprint([(x[0], model_to_dict(x[1])) for x in query if x[1]])
+        query = {}
+        for week_date in weekday_date_list:
+            if Task.select().where((week_date == Task.end_date) & (Task.owner == owner)).get_or_none():
+                query[str(week_date)] = [task.id for task in Task.select().where((week_date == Task.end_date) & (Task.owner == owner)).execute()]
+        # print(query)
+        return json.dumps(query), 201
