@@ -6,8 +6,9 @@ Date.prototype.isSameDateAs = function (pDate) {
   );
 }
 
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
     // Templates
+    const taskTemplate = document.querySelector('#task-template');
     const createFormTemplate = document.querySelector('#create-form');
     const createGroupTemplate = document.querySelector('#create-group');
 
@@ -26,18 +27,25 @@ window.addEventListener('load', () => {
         }
     }
 
-    const sendAPI = async (url, method, body) => {
-        return await fetch(url, {
+    const sendAPI = async (url, method, headers = {}, body = null) => {
+        const params = {
             method,
             headers: {
-                "Content-Type": 'application/json'
+                "Content-Type": 'application/json',
+                ...headers
             },
-            body: JSON.stringify(body)
-        });
+        };
+
+        if (body && Object.keys(body).length) {
+            params['body'] = JSON.stringify(body);
+        }
+
+        return await fetch(url, params);
     }
 
     // set calendar
-    const setUpCalendar = (active_date) => {
+    const setUpCalendar = async (active_date) => {
+        // get headers
         const tableHeadings = document.querySelectorAll('.table__heading');
         const tableHeadingToday = document.querySelector('.table__heading--today');
         const controller = document.querySelector('.controllers__week-text');
@@ -54,8 +62,8 @@ window.addEventListener('load', () => {
         const mondayDate = new Date(curr.setDate(curr.getDate() - curr.getDay() + 1));
         const sundayDate = new Date(curr.setDate(curr.getDate() - curr.getDay() + 7)); // First day is the day of the month - the day of the week
 
-        controller.textContent = `${mondayDate.toLocaleString('default', { month: 'long', day: 'numeric' })} — `;
-        controller.textContent += sundayDate.toLocaleString('default', { month: 'long', day: 'numeric' });
+        controller.textContent = `${mondayDate.toLocaleString('default', {month: 'long', day: 'numeric'})} — `;
+        controller.textContent += sundayDate.toLocaleString('default', {month: 'long', day: 'numeric'});
 
         tableHeadings.forEach((heading, idx) => {
             const day = new Date();
@@ -67,9 +75,32 @@ window.addEventListener('load', () => {
                 heading.classList.add('table__heading--today');
             }
         });
+
+        // get base info
+        const dayColumns = document.querySelectorAll('.table__date-tasks');
+        const formattedDate = ACTIVE_DATE.toISOString().split('T')[0]
+        const tasks = await sendAPI(`/calendar/task/get/${formattedDate}`, "GET",  {
+            Authorization: `Bearer ${localStorage.getItem('user')}`
+        });
+
+        const result = await tasks.json();
+
+        dayColumns.forEach((column, index) => {
+            column.innerHTML = "";
+
+            result[index].forEach(({title, end_time, group}) => {
+                const task = taskTemplate.content.cloneNode(true);
+
+                task.querySelector('.task__heading').textContent = title;
+                task.querySelector('.task__deadline').textContent = `Deadline: ${end_time.slice(0, 5)}`;
+                task.querySelector('.task').style.backgroundColor = group.color;
+
+                column.appendChild(task);
+            });
+        });
     };
 
-    setUpCalendar(ACTIVE_DATE);
+    await setUpCalendar(ACTIVE_DATE);
 
     const prevWeekBtn = document.querySelector('.controllers__week-prev');
     const nextWeekBtn = document.querySelector('.controllers__week-next');
@@ -93,7 +124,7 @@ window.addEventListener('load', () => {
         setUpCalendar(ACTIVE_DATE);
     });
 
-    columns.forEach((column) => {
+    columns.forEach((column, index) => {
         column.addEventListener('click', (event) => {
             if (!event.target.isSameNode(column)) {
                 return;
@@ -107,21 +138,32 @@ window.addEventListener('load', () => {
                 evt.preventDefault();
                 const target = evt.target;
 
+                const current = new Date(ACTIVE_DATE.getTime())
+                const end_date = new Date(current.setDate(current.getDate() - current.getDay() + 1 + index));
+
                 const data = {
+                    end_date,
                     "title": target.querySelector('#task-title').value,
                     "group_id": target.querySelector('#group-select').value,
                     "is_work": target.querySelector("#is_work").value === 'on',
-                    "start": target.querySelector("#start").value || Date.now(),
-                    "end_date": '111111',
+                    "start": target.querySelector("#start").value,
                     "owner": +localStorage.getItem("user"),
                     "end_time": target.querySelector("#deadline").value || null,
                 };
-                
-                console.log(data);
-                const response = await sendAPI(`/calendar/task/create`, "POST", data);
+
+                const response = await sendAPI(`/calendar/task/create`, "POST", {}, data);
 
                 if (Math.floor(response.status / 100) === 2) {
                     deleteBySelector('#create-task');
+
+                    const {title, end_time} = await response.json();
+                    console.log(title, end_time)
+
+                    const task = taskTemplate.content.cloneNode(true);
+                    task.querySelector('.task__heading').textContent = title;
+                    task.querySelector('.task__deadline').textContent = `Deadline: ${end_time.slice(0, 5)}`;
+
+                    column.appendChild(task);
                 }
             });
             column.appendChild(createForm);
@@ -148,7 +190,7 @@ window.addEventListener('load', () => {
                 };
 
                 console.log(data);
-                const response = await sendAPI(`/calendar/group/create`, "POST", data);
+                const response = await sendAPI(`/calendar/group/create`, "POST", {}, data);
 
                 if (Math.floor(response.status / 100) === 2) {
                     deleteBySelector('#create-group');

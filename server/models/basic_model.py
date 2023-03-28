@@ -12,10 +12,12 @@ db = MySQLDatabase(
     database=os.environ.get("DB_DATABASE")
 )
 
+
 class BaseModel(Model):
     """ Base model """
+
     class Meta:
-        """ idk what is it for, but it's in every tutorial """
+        """ IDK what is it for, but it's in every tutorial """
         database = db
 
     @classmethod

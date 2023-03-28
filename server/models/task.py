@@ -5,6 +5,7 @@ from server.models.basic_model import BaseModel
 from server.models.group import Group
 from server.models.user import User
 
+
 class Task(BaseModel):
     """ Task Model """
     title = CharField()
@@ -12,7 +13,7 @@ class Task(BaseModel):
     owner = ForeignKeyField(User)
     is_work = BooleanField()
     group = ForeignKeyField(Group)
-    start_date = DateTimeField()
+    start_time = TimeField()
     end_date = DateField()
     end_time = TimeField()
     overall = IntegerField()

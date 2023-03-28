@@ -29,20 +29,19 @@ def calendar_task_create():
     owner = data.get("owner")
 
     overall = None
+    print(start)
     if start and end_time:
         start_time = timedelta(hours=int(start.split(':')[0]), minutes=int(start.split(':')[1]))
         end_time = timedelta(hours=int(end_time.split(':')[0]), minutes=int(end_time.split(':')[1]))
         overall = end_time - start_time
         overall = overall.seconds
 
-    print(owner)
-
     task = Task.create(title=title,
                        description='123',
                        owner=owner,
                        is_work=is_work,
                        group=group_id,
-                       start_time=start_time,
+                       start_time=start,
                        end_date=end_date,
                        end_time=end_time,
                        overall=overall)
@@ -50,6 +49,7 @@ def calendar_task_create():
     result = model_to_dict(task, recurse=False)
 
     return json.dumps(result, default=str), 201
+
 
 @calendar_bp.route('/calendar/group/create', methods=['POST'])
 def calendar_group_create():
@@ -70,17 +70,41 @@ def calendar_group_create():
 @calendar_bp.route('/calendar/task/get/<date_day>', methods=['GET'])
 def get_tasks(date_day: str):
     if date_day:
-        owner = int(request.headers.get("Authorization").split(' ')[1])
+        try:
+            owner = int(request.headers.get("Authorization").split(' ')[1])
+        except (ValueError, IndexError, AttributeError):
+            return json.dumps({"message": "Authorization required"}), 403
+
         date_format = datetime.strptime(date_day, '%Y-%m-%d')
         local_date = date_format - timedelta(days=7)
 
         while local_date.weekday() != 0:
             local_date += timedelta(days=1)
 
-        weekday_date_list = [local_date + timedelta(days=x) for x in range(7)]
-        query = {}
-        for week_date in weekday_date_list:
-            if Task.select().where((week_date == Task.end_date) & (Task.owner == owner)).get_or_none():
-                query[str(week_date).split(' ')[0]] = [task.id for task in Task.select().where((week_date == Task.end_date) & (Task.owner == owner)).execute()]
-        print(query)
-        return json.dumps(query), 201
+        query = []
+        for week_date in (local_date + timedelta(days=x) for x in range(7)):
+            day = []
+
+            for task in Task.select().where((week_date == Task.end_date) & (Task.owner == owner)):
+                task_model = task.get_or_none()
+
+                if task_model:
+                    task_dict = model_to_dict(task_model)
+                    day.append({
+                        'end_date': task_dict['end_date'],
+                        'end_time': task_dict['end_time'],
+                        'group': {
+                            'color': task_dict['group']['color'],
+                            'id': task_dict['group']['id'],
+                        },
+                        'is_work': task_dict['is_work'],
+                        'title': task_dict['title'],
+                        'overall': task_dict['overall'],
+                        'start_time': task_dict['start_time'],
+                    })
+
+            query.append(day)
+
+        return json.dumps(query, default=str), 200
+
+    return json.dumps({"message": "Bad request"}), 400
