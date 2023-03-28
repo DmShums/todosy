@@ -403,6 +403,7 @@ label {
     width: 100%;
     padding-bottom: 53px;
     border-collapse: collapse;
+    min-height: 100%;
 }
 
 .visually-hidden {
@@ -443,13 +444,14 @@ label {
 
 .table__heading--today {
     background: #E7CFB5;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     color: #45484F;
 }
 
 .table__tasks {
     border-top: 1px solid #28282A;
     padding-top: 64px;
+    min-height: 100%;
 }
 
 .table__date-tasks {
@@ -458,7 +460,7 @@ label {
     padding-right: 5px;
     vertical-align: top;
     border-right: 1px solid #28282A;
-    
+    min-height: 100%;
 }
 
 .task__create,

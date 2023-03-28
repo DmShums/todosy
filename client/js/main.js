@@ -66,7 +66,7 @@ window.addEventListener('load', async () => {
         controller.textContent += sundayDate.toLocaleString('default', {month: 'long', day: 'numeric'});
 
         tableHeadings.forEach((heading, idx) => {
-            const day = new Date();
+            const day = new Date(mondayDate.getTime());
             day.setDate(mondayDate.getDate() + idx)
 
             heading.textContent = `${day.getDate()} ${days[idx]}`;
@@ -157,11 +157,12 @@ window.addEventListener('load', async () => {
                     deleteBySelector('#create-task');
 
                     const {title, end_time} = await response.json();
-                    console.log(title, end_time)
 
                     const task = taskTemplate.content.cloneNode(true);
+
                     task.querySelector('.task__heading').textContent = title;
                     task.querySelector('.task__deadline').textContent = `Deadline: ${end_time.slice(0, 5)}`;
+                    task.querySelector('.task').style.backgroundColor = group.color;
 
                     column.appendChild(task);
                 }

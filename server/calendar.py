@@ -29,7 +29,7 @@ def calendar_task_create():
     owner = data.get("owner")
 
     overall = None
-    print(start)
+
     if start and end_time:
         start_time = timedelta(hours=int(start.split(':')[0]), minutes=int(start.split(':')[1]))
         end_time = timedelta(hours=int(end_time.split(':')[0]), minutes=int(end_time.split(':')[1]))
@@ -86,10 +86,8 @@ def get_tasks(date_day: str):
             day = []
 
             for task in Task.select().where((week_date == Task.end_date) & (Task.owner == owner)):
-                task_model = task.get_or_none()
-
-                if task_model:
-                    task_dict = model_to_dict(task_model)
+                if task:
+                    task_dict = model_to_dict(task)
                     day.append({
                         'end_date': task_dict['end_date'],
                         'end_time': task_dict['end_time'],
