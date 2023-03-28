@@ -81,6 +81,6 @@ def get_tasks(date_day: str):
         query = {}
         for week_date in weekday_date_list:
             if Task.select().where((week_date == Task.end_date) & (Task.owner == owner)).get_or_none():
-                query[str(week_date)] = [task.id for task in Task.select().where((week_date == Task.end_date) & (Task.owner == owner)).execute()]
-        # print(query)
+                query[str(week_date).split(' ')[0]] = [task.id for task in Task.select().where((week_date == Task.end_date) & (Task.owner == owner)).execute()]
+        print(query)
         return json.dumps(query), 201
