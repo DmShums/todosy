@@ -41,6 +41,7 @@ window.addEventListener('load', () => {
         response = await result.json();
 
         if (result.ok) {
+            console.log("success")
             localStorage.setItem(LOCAL_STORAGE_CELL, response.user);
             window.location.replace("/calendar");
             return;

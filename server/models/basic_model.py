@@ -17,3 +17,10 @@ class BaseModel(Model):
     class Meta:
         """ idk what is it for, but it's in every tutorial """
         database = db
+
+    @classmethod
+    def get_or_none(cls, *query, **kwargs):
+        try:
+            return cls.get(*query)
+        except cls.DoesNotExist:
+            return None

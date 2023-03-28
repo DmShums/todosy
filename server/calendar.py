@@ -3,9 +3,11 @@ from  datetime import datetime, timedelta
 
 from flask import Blueprint, render_template, url_for, request
 from playhouse.shortcuts import model_to_dict
+from peewee import fn
 
 from server.models.task import Task
 from server.models.group import Group
+from pprint import pprint
 
 calendar_bp = Blueprint('index', __name__)
 
@@ -66,6 +68,7 @@ def calendar_group_create():
 @calendar_bp.route('/calendar/task/get/<date_day>', methods=['GET'])
 def get_tasks(date_day : str):
     if date_day:
+        owner = int(request.headers.get("Authorization").split(' ')[1])
         date_format = datetime.strptime(date_day, '%Y-%m-%d')
         local_date = date_format - timedelta(days=7)
 
@@ -73,5 +76,6 @@ def get_tasks(date_day : str):
             local_date += timedelta(days=1)
 
         weekday_date_list = [local_date + timedelta(days=x) for x in range(7)]
-        query = [[week_date, Task.select().where(str(Task.end_date) == date_day).execute()] for week_date in weekday_date_list]
-        print([model_to_dict(x) for x in query])
+        query = [[week_date, Task.select().where((week_date == Task.end_date ) & (Task.owner == owner)).get_or_none()]
+                                                    for week_date in weekday_date_list]
+        pprint([(x[0], model_to_dict(x[1])) for x in query if x[1]])
