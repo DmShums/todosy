@@ -25,7 +25,6 @@ def login_post():
 
         if user_password == user.password:
             user_jwt = jwt.encode({"id": user.id}, os.environ.get("SECRET"), algorithm="HS256")
-            print(user_jwt)
             return json.dumps({"user": user_jwt}, default=str), 200
 
         return json.dumps({"message": "Wrong password"}), 403

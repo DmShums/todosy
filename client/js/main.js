@@ -153,16 +153,17 @@ window.addEventListener('load', async () => {
                     "group_id": target.querySelector('#group-select').value,
                     "is_work": target.querySelector("#is_work").value === 'on',
                     "start": target.querySelector("#start").value,
-                    "owner": +localStorage.getItem("user"),
                     "end_time": target.querySelector("#deadline").value || null,
                 };
 
-                const response = await sendAPI(`/calendar/task/create`, "POST", {}, data);
+                const response = await sendAPI(`/calendar/task/create`, "POST",   {
+                    Authorization: `Bearer ${localStorage.getItem('user')}`
+                }, data);
 
                 if (Math.floor(response.status / 100) === 2) {
                     deleteBySelector('#create-task');
 
-                    const {title, end_time} = await response.json();
+                    const {title, end_time, group} = await response.json();
 
                     const task = taskTemplate.content.cloneNode(true);
 
@@ -192,12 +193,13 @@ window.addEventListener('load', async () => {
 
                 const data = {
                     "title": target.querySelector('#group-title').value,
-                    "color": target.querySelector("#group-color").value,
-                    "owner": +localStorage.getItem("user"),
+                    "color": target.querySelector("#group-color").value
                 };
 
                 console.log(data);
-                const response = await sendAPI(`/calendar/group/create`, "POST", {}, data);
+                const response = await sendAPI(`/calendar/group/create`, "POST", {
+                    Authorization: `Bearer ${localStorage.getItem('user')}`
+                }, data);
 
                 if (Math.floor(response.status / 100) === 2) {
                     deleteBySelector('#create-group');

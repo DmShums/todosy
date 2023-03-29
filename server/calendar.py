@@ -1,14 +1,13 @@
 import json
-import os
 from datetime import datetime, timedelta
 
-import jwt
 from flask import Blueprint, render_template, url_for, request
 from playhouse.shortcuts import model_to_dict
 
 from server.models.task import Task
 from server.models.group import Group
-from pprint import pprint
+
+from server.utils import get_user
 
 calendar_bp = Blueprint('index', __name__)
 
@@ -20,6 +19,11 @@ def calendar():
 
 @calendar_bp.route('/calendar/task/create', methods=['POST'])
 def calendar_task_create():
+    try:
+        owner = get_user(request)
+    except (ValueError, IndexError, AttributeError):
+        return json.dumps({"message": "Authorization required"}), 403
+
     data = request.json
 
     title = data.get("title")
@@ -28,7 +32,6 @@ def calendar_task_create():
     is_work = data.get("is_work")
     end_time = data.get("end_time")
     end_date = data.get("end_date")
-    owner = data.get("owner")
 
     overall = None
 
@@ -48,24 +51,28 @@ def calendar_task_create():
                        end_time=end_time,
                        overall=overall)
 
-    result = model_to_dict(task, recurse=False)
+    result = model_to_dict(task, exclude=[Task.group.owner, Task.owner])
 
     return json.dumps(result, default=str), 201
 
 
 @calendar_bp.route('/calendar/group/create', methods=['POST'])
 def calendar_group_create():
+    try:
+        owner = get_user(request)
+    except (ValueError, IndexError, AttributeError):
+        return json.dumps({"message": "Authorization required"}), 403
+
     data = request.json
 
     title = data.get("title")
     color = data.get("color")
-    owner = data.get("owner")
 
     group = Group.create(title=title,
                          color=color,
                          owner=owner)
 
-    result = model_to_dict(group)
+    result = model_to_dict(group, exclude=[Group.owner.password])
     return json.dumps(result, default=str), 201
 
 
@@ -73,8 +80,7 @@ def calendar_group_create():
 def get_tasks(date_day: str):
     if date_day:
         try:
-            jwt_code = request.headers.get("Authorization").split(' ')[1]
-            owner = jwt.decode(jwt_code, os.environ.get("SECRET"), algorithms=["HS256"])['id']
+            owner = get_user(request)
         except (ValueError, IndexError, AttributeError):
             return json.dumps({"message": "Authorization required"}), 403
 

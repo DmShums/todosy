@@ -1,4 +1,8 @@
 import hashlib
+import json
+import os
+
+import jwt
 
 
 def hash_password(pswrd: str):
@@ -13,3 +17,10 @@ def hash_password(pswrd: str):
 
     # Printing the Hash
     return hashed.hexdigest()
+
+
+def get_user(request):
+    jwt_code = request.headers.get("Authorization").split(' ')[1]
+    owner = jwt.decode(jwt_code, os.environ.get("SECRET"), algorithms=["HS256"])['id']
+
+    return owner
