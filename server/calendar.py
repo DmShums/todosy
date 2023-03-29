@@ -91,7 +91,7 @@ def get_tasks(date_day: str):
             local_date += timedelta(days=1)
 
         query = []
-        work_time = 0
+        work_time = 1
         leisure_time = 0
         for week_date in (local_date + timedelta(days=x) for x in range(7)):
             day = []
@@ -119,7 +119,8 @@ def get_tasks(date_day: str):
 
             query.append(day)
 
-        percentage = (1 + (work_time * 1.618 - leisure_time) / (work_time * 1.618 + leisure_time)) / 2
+        percentage = (1 + (work_time * 1.618 - leisure_time) /
+                        (work_time * 1.618 + leisure_time)) / 2
 
         return json.dumps({'query': query, 'percentage': percentage}, default=str), 200
 
