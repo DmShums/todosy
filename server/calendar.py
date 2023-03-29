@@ -115,3 +115,32 @@ def get_tasks(date_day: str):
         return json.dumps(query, default=str), 200
 
     return json.dumps({"message": "Bad request"}), 400
+
+@calendar_bp.route('/calendar/grop/get', methods=['GET'])
+def get_groups():
+    try:
+        owner = get_user(request)
+    except (ValueError, IndexError, AttributeError):
+        return json.dumps({"message": "Authorization required"}), 403
+    query = []
+    groups=[{
+                'title' : 'Work',
+                'color' : '#ff0000',
+                'owner_id' : owner
+            },
+            {
+                'title' : 'Leisure',
+                'color' : '#00FF00',
+                'owner_id' : owner
+            }
+            ]
+    for group in Group.select().where(Group.owner_id == owner):
+        if group:
+            group_dict = model_to_dict(group)
+            groups.append({
+                'title' : group_dict['title'],
+                'color' : group_dict['color'],
+                'owner_id' : group_dict['owner_id']
+            })
+    query.append(groups)
+    return json.dumps(query, default=str), 200
