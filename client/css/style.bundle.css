@@ -582,13 +582,12 @@ label {
     position: relative;
 }
 
-.controllers__balance::before {
-    content: "";
-    display: block;
+.controllers__balance-line {
     height: 100%;
     width: 5px;
     position: absolute;
     top: 0;
     left: 35%;
-    background: #534D48;
+    background: #28282A;
+    transform: translateX(-50%);
 }

@@ -91,6 +91,8 @@ def get_tasks(date_day: str):
             local_date += timedelta(days=1)
 
         query = []
+        work_time = 0
+        leisure_time = 0
         for week_date in (local_date + timedelta(days=x) for x in range(7)):
             day = []
 
@@ -110,11 +112,57 @@ def get_tasks(date_day: str):
                         }
                     })
 
+                    if task_dict['is_work']:
+                        work_time += task_dict['overall']
+                    else:
+                        leisure_time += task_dict['overall']
+
             query.append(day)
 
-        return json.dumps(query, default=str), 200
+        percentage = (1 + (work_time * 1.618 - leisure_time) / (work_time * 1.618 + leisure_time)) / 2
+
+        return json.dumps({'query': query, 'percentage': percentage}, default=str), 200
 
     return json.dumps({"message": "Bad request"}), 400
+
+@calendar_bp.route('/calendar/day/get/<date_day>', methods=['GET'])
+def day_summary(date_day: str):
+    if date_day:
+        try:
+            owner = get_user(request)
+        except (ValueError, IndexError, AttributeError):
+            return json.dumps({"message": "Authorization required"}), 403
+
+        date_format = datetime.strptime(date_day, '%Y-%m-%d')
+
+        working_time = 0
+        leisure_time = 0
+        groups_time = {}
+        for task in Task.select().where((date_format == Task.end_date) & (Task.owner == owner)):
+            if task:
+                task_dict = model_to_dict(task)
+                if task_dict['is_work']:
+                    working_time += task_dict['overall']
+                else:
+                    leisure_time += task_dict['overall']
+
+                if task_dict['group']['title'] not in groups_time:
+                    groups_time[task_dict['group']['title']]={'time': task_dict['overall'],
+                                                              'color': task_dict['group']['color']}
+                else:
+                    groups_time[task_dict['group']['title']]['time'] += task_dict['overall']
+
+        spent_time = working_time + leisure_time
+        respond = {
+            "groups_time": groups_time,
+            "spent_time": spent_time,
+            "working_rime": working_time,
+            "leisure_time": leisure_time
+        }
+        return json.dumps(respond, default=str), 200
+
+    return json.dumps({"message": "Bad request"}), 400
+
 
 @calendar_bp.route('/calendar/grop/get', methods=['GET'])
 def get_groups():

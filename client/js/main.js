@@ -84,6 +84,7 @@ window.addEventListener('load', async () => {
 
         // get base info
         const dayColumns = document.querySelectorAll('.table__date-tasks');
+        const balanceLine = document.querySelector('.controllers__balance-line');
         const formattedDate = ACTIVE_DATE.toISOString().split('T')[0]
         const tasks = await sendAPI(`/calendar/task/get/${formattedDate}`, "GET",  {
             Authorization: `Bearer ${localStorage.getItem('user')}`
@@ -94,7 +95,7 @@ window.addEventListener('load', async () => {
         dayColumns.forEach((column, index) => {
             column.innerHTML = "";
 
-            result[index].forEach(({title, end_time, group}) => {
+            result.query[index].forEach(({title, end_time, group}) => {
                 const task = taskTemplate.content.cloneNode(true);
 
                 task.querySelector('.task__heading').textContent = title;
@@ -104,6 +105,19 @@ window.addEventListener('load', async () => {
                 column.appendChild(task);
             });
         });
+
+        console.log(result.percentage)
+
+        const color2 = [44, 40, 31];
+        const color1 = [231, 207, 181];
+        var w1 = result.percentage;
+        var w2 = 1 - w1;
+        var rgb = [Math.round(color1[0] * w1 + color2[0] * w2),
+            Math.round(color1[1] * w1 + color2[1] * w2),
+            Math.round(color1[2] * w1 + color2[2] * w2)];
+
+        balanceLine.style.background = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+        balanceLine.style.left = `${result.percentage * 100}%`;
     };
 
     await setUpCalendar(ACTIVE_DATE);
@@ -151,7 +165,7 @@ window.addEventListener('load', async () => {
                     end_date,
                     "title": target.querySelector('#task-title').value,
                     "group_id": target.querySelector('#group-select').value,
-                    "is_work": target.querySelector("#is_work").value === 'on',
+                    "is_work": target.querySelector("#is_work").checked,
                     "start": target.querySelector("#start").value,
                     "end_time": target.querySelector("#deadline").value || null,
                 };
