@@ -106,8 +106,6 @@ window.addEventListener('load', async () => {
             });
         });
 
-        console.log(result.percentage)
-
         const color2 = [44, 40, 31];
         const color1 = [231, 207, 181];
         var w1 = result.percentage;
