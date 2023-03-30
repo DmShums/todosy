@@ -110,7 +110,7 @@ def get_tasks(date_day: str):
         for week_date in (local_date + timedelta(days=x) for x in range(7)):
             day = []
 
-            for task in Task.select().where((week_date == Task.end_date) & (Task.owner == owner)):
+            for task in Task.select().where((week_date == Task.end_date) & (Task.owner == owner)).order_by(Task.end_time):
                 if task:
                     task_dict = model_to_dict(task)
                     day.append({
