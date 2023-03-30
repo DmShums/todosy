@@ -55,6 +55,20 @@ def calendar_task_create():
 
     return json.dumps(result, default=str), 201
 
+@calendar_bp.route('/calendar/task/delete/<id>', methods=['DELETE'])
+def calendar_task_edit(id: int):
+    try:
+        owner = get_user(request)
+    except (ValueError, IndexError, AttributeError):
+        return json.dumps({"message": "Authorization required"}), 403
+
+    try:
+        Task.delete().where((id == Task.id) & (Task.owner == owner)).execute()
+    except:
+        return json.dumps({"message": "Task with such id not found"}), 404
+
+    return json.dumps({"message": "Task successfuly deleted"}), 200
+
 
 @calendar_bp.route('/calendar/group/create', methods=['POST'])
 def calendar_group_create():
