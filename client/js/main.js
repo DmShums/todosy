@@ -1,237 +1,347 @@
-Date.prototype.isSameDateAs = function (pDate) {
-  return (
-    this.getFullYear() === pDate.getFullYear() &&
-    this.getMonth() === pDate.getMonth() &&
-    this.getDate() === pDate.getDate()
-  );
+Date.prototype.isSameDateAs = function(pDate) {
+	return (
+		this.getFullYear() === pDate.getFullYear() &&
+		this.getMonth() === pDate.getMonth() &&
+		this.getDate() === pDate.getDate()
+	);
 }
 
 const LOCAL_STORAGE_CELL = 'user'
+const TOKEN = localStorage.getItem(LOCAL_STORAGE_CELL)
 
-if (!localStorage.getItem(LOCAL_STORAGE_CELL)) {
-    window.location.replace("/");
+if (!TOKEN) {
+	window.location.replace("/");
 }
 
 window.addEventListener('load', async () => {
-    // Templates
-    const taskTemplate = document.querySelector('#task-template');
-    const createFormTemplate = document.querySelector('#create-form');
-    const createGroupTemplate = document.querySelector('#create-group');
+	// Templates
+	const taskTemplate = document.querySelector('#task-template');
+	const createFormTemplate = document.querySelector('#create-form');
+	const createGroupTemplate = document.querySelector('#create-group');
 
-    let ACTIVE_DATE = new Date();
+	let ACTIVE_DATE = new Date();
+	let USER_GROUPS = []
 
-    // wrappers
-    const columns = document.querySelectorAll('.table__date-tasks');
-    const tasks = document.querySelectorAll('.task');
+	// wrappers
+	const columns = document.querySelectorAll('.table__date-tasks');
 
-    // utils
-    const deleteBySelector = (selector) => {
-        const prevCreate = document.querySelector(selector);
+	// utils
+	const deleteBySelector = (selector) => {
+		const prevCreate = document.querySelector(selector);
 
-        if (prevCreate) {
-            prevCreate.parentElement.removeChild(prevCreate);
+		if (prevCreate) {
+			prevCreate.parentElement.removeChild(prevCreate);
+		}
+	}
+
+	const sendAPI = async (url, method, headers = {}, body = null) => {
+		const params = {
+			method,
+			headers: {
+				"Content-Type": 'application/json',
+				...headers
+			},
+		};
+
+		if (body && Object.keys(body).length) {
+			params['body'] = JSON.stringify(body);
+		}
+
+		return await fetch(url, params);
+	}
+
+    const getGroups = async () => {
+        const result = await sendAPI('/calendar/groups/get', 'GET', {
+			Authorization: `Bearer ${TOKEN}`
+		});
+
+		if (result.ok) {
+            USER_GROUPS = await result.json();
+            USER_GROUPS = USER_GROUPS[0]
         }
     }
+	const setGroups = async () => {
+        await getGroups();
 
-    const sendAPI = async (url, method, headers = {}, body = null) => {
-        const params = {
-            method,
-            headers: {
-                "Content-Type": 'application/json',
-                ...headers
-            },
-        };
+        const createTemplate = document.querySelector('#create-form');
+        const select = createTemplate.content.querySelector("#group-select")
+        select.innerHTML = "";
 
-        if (body && Object.keys(body).length) {
-            params['body'] = JSON.stringify(body);
-        }
+        const fragment = document.createDocumentFragment();
 
-        return await fetch(url, params);
-    }
-
-    // set calendar
-    const setUpCalendar = async (active_date) => {
-        // get headers
-        const tableHeadings = document.querySelectorAll('.table__heading');
-        const tableHeadingToday = document.querySelector('.table__heading--today');
-        const controller = document.querySelector('.controllers__week-text');
-
-        if (tableHeadingToday) {
-            tableHeadingToday.classList.remove('table__heading--today');
-        }
-
-        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-
-        const today = new Date();
-        const curr = new Date(active_date.getTime()); // get current date
-
-        const mondayDate = new Date(curr.setDate(curr.getDate() - curr.getDay() + 1));
-        const sundayDate = new Date(curr.setDate(curr.getDate() - curr.getDay() + 7)); // First day is the day of the month - the day of the week
-
-        controller.textContent = `${mondayDate.toLocaleString('default', {month: 'long', day: 'numeric'})} — `;
-        controller.textContent += sundayDate.toLocaleString('default', {month: 'long', day: 'numeric'});
-
-        tableHeadings.forEach((heading, idx) => {
-            const day = new Date(mondayDate.getTime());
-            day.setDate(mondayDate.getDate() + idx)
-
-            heading.textContent = `${day.getDate()} ${days[idx]}`;
-
-            if (today.isSameDateAs(day)) {
-                heading.classList.add('table__heading--today');
-            }
+        USER_GROUPS.forEach(({
+            id,
+            title
+        }) => {
+            const option = document.createElement('option');
+            option.value = id;
+            option.textContent = title;
+            fragment.append(option);
         });
 
-        // get base info
-        const dayColumns = document.querySelectorAll('.table__date-tasks');
-        const balanceLine = document.querySelector('.controllers__balance-line');
-        const formattedDate = ACTIVE_DATE.toISOString().split('T')[0]
-        const tasks = await sendAPI(`/calendar/task/get/${formattedDate}`, "GET",  {
-            Authorization: `Bearer ${localStorage.getItem('user')}`
-        });
+        select.appendChild(fragment);
 
-        const result = await tasks.json();
+        document.querySelectorAll('.task').forEach((item) => {
+            const select = item.querySelector("#group-select");
+            const selected = select.value;
+            select.innerHTML = "";
 
-        dayColumns.forEach((column, index) => {
-            column.innerHTML = "";
+            const fragment = document.createDocumentFragment();
 
-            result.query[index].forEach(({title, end_time, group}) => {
-                const task = taskTemplate.content.cloneNode(true);
-
-                task.querySelector('.task__heading').textContent = title;
-                task.querySelector('.task__deadline').textContent = `Deadline: ${end_time.slice(0, 5)}`;
-                task.querySelector('.task').style.backgroundColor = group.color;
-
-                column.appendChild(task);
+            USER_GROUPS.forEach(({
+                id,
+                title
+            }) => {
+                const option = document.createElement('option');
+                option.value = id;
+                option.textContent = title;
+                fragment.append(option);
             });
+            select.appendChild(fragment);
+            select.value = selected;
         });
+	};
 
-        const color2 = [44, 40, 31];
-        const color1 = [231, 207, 181];
-        var w1 = result.percentage;
-        var w2 = 1 - w1;
-        var rgb = [Math.round(color1[0] * w1 + color2[0] * w2),
-            Math.round(color1[1] * w1 + color2[1] * w2),
-            Math.round(color1[2] * w1 + color2[2] * w2)];
+	// set calendar
+	const setUpCalendar = async (active_date) => {
+		// get headers
+		const tableHeadings = document.querySelectorAll('.table__heading');
+		const tableHeadingToday = document.querySelector('.table__heading--today');
+		const controller = document.querySelector('.controllers__week-text');
 
-        balanceLine.style.background = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
-        balanceLine.style.left = `${result.percentage * 100}%`;
-    };
+		if (tableHeadingToday) {
+			tableHeadingToday.classList.remove('table__heading--today');
+		}
 
-    await setUpCalendar(ACTIVE_DATE);
+		const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-    const prevWeekBtn = document.querySelector('.controllers__week-prev');
-    const nextWeekBtn = document.querySelector('.controllers__week-next');
-    const controller = document.querySelector('.controllers__week-text');
+		const today = new Date();
+		const curr = new Date(active_date.getTime()); // get current date
 
-    controller.addEventListener('click', (event) => {
-        event.preventDefault();
-        ACTIVE_DATE = new Date;
-        setUpCalendar(ACTIVE_DATE);
-    });
+		const mondayDate = new Date(curr.setDate(curr.getDate() - curr.getDay() + 1));
+		const sundayDate = new Date(curr.setDate(curr.getDate() - curr.getDay() + 7)); // First day is the day of the month - the day of the week
 
-    prevWeekBtn.addEventListener('click', (event) => {
-        event.preventDefault();
-        ACTIVE_DATE.setDate(ACTIVE_DATE.getDate() - 7);
-        setUpCalendar(ACTIVE_DATE);
-    });
+		controller.textContent = `${mondayDate.toLocaleString('default', {month: 'long', day: 'numeric'})} — `;
+		controller.textContent += sundayDate.toLocaleString('default', {
+			month: 'long',
+			day: 'numeric'
+		});
 
-    nextWeekBtn.addEventListener('click', (event) => {
-        event.preventDefault();
-        ACTIVE_DATE.setDate(ACTIVE_DATE.getDate() + 7);
-        setUpCalendar(ACTIVE_DATE);
-    });
+		tableHeadings.forEach((heading, idx) => {
+			const day = new Date(mondayDate.getTime());
+			day.setDate(mondayDate.getDate() + idx)
 
-    columns.forEach((column, index) => {
-        column.addEventListener('click', (event) => {
-            if (!event.target.isSameNode(column)) {
-                return;
-            }
+			heading.textContent = `${day.getDate()} ${days[idx]}`;
 
-            event.preventDefault();
-            deleteBySelector('#create-task');
+			if (today.isSameDateAs(day)) {
+				heading.classList.add('table__heading--today');
+			}
+		});
 
-            const createForm = createFormTemplate.content.cloneNode(true);
-            createForm.querySelector('form').addEventListener('submit', async (evt) => {
-                evt.preventDefault();
-                const target = evt.target;
+		// get base info
+		const dayColumns = document.querySelectorAll('.table__date-tasks');
+		const balanceLine = document.querySelector('.controllers__balance-line');
+		const formattedDate = ACTIVE_DATE.toISOString().split('T')[0]
+		const tasks = await sendAPI(`/calendar/task/get/${formattedDate}`, "GET", {
+			Authorization: `Bearer ${localStorage.getItem('user')}`
+		});
 
-                const current = new Date(ACTIVE_DATE.getTime())
-                const end_date = new Date(current.setDate(current.getDate() - current.getDay() + 1 + index));
+		const result = await tasks.json();
+        await getGroups();
 
-                const data = {
-                    end_date,
-                    "title": target.querySelector('#task-title').value,
-                    "group_id": target.querySelector('#group-select').value,
-                    "is_work": target.querySelector("#is_work").checked,
-                    "start": target.querySelector("#start").value,
-                    "end_time": target.querySelector("#deadline").value || null,
-                };
+		dayColumns.forEach((column, index) => {
+			column.innerHTML = "";
 
-                const response = await sendAPI(`/calendar/task/create`, "POST",   {
-                    Authorization: `Bearer ${localStorage.getItem('user')}`
-                }, data);
+			result.query[index].forEach(({
+				id,
+				title,
+				end_time,
+				start_time,
+				is_work,
+				group
+			}) => {
+				const task = taskTemplate.content.cloneNode(true).querySelector('.task');
 
-                if (Math.floor(response.status / 100) === 2) {
-                    deleteBySelector('#create-task');
+				task.querySelector('.task__heading').textContent = title;
+				task.querySelector('.task__deadline').textContent = `Deadline: ${end_time.slice(0, 5)}`;
+				task.style.backgroundColor = group.color;
 
-                    const {title, end_time, group} = await response.json();
+				task.querySelector('.task-name').value = title;
+				task.querySelector('#deadline').value = end_time.slice(0, 5);
+				task.querySelector('#start').value = start_time.slice(0, 5);
+				task.querySelector('#is_work').checked = is_work;
 
-                    const task = taskTemplate.content.cloneNode(true);
+				task.querySelector('.task-delete').addEventListener('click', async (event) => {
+					event.preventDefault();
+					event.stopPropagation();
+					await sendAPI(`/calendar/task/delete/${id}`, 'DELETE', {
+						Authorization: `Bearer ${TOKEN}`
+					});
 
-                    task.querySelector('.task__heading').textContent = title;
-                    task.querySelector('.task__deadline').textContent = `Deadline: ${end_time.slice(0, 5)}`;
-                    task.querySelector('.task').style.backgroundColor = group.color;
+					await setUpCalendar(ACTIVE_DATE);
+				});
 
-                    column.appendChild(task);
-                }
-            });
-            column.appendChild(createForm);
-        });
+				task.querySelector('.task__footer-cancel').addEventListener('click', (event) => {
+					event.preventDefault();
+					event.stopPropagation();
+					task.classList.remove('task--edit');
+				});
 
-        column.addEventListener('contextmenu', (event) => {
-            if (!event.target.isSameNode(column)) {
-                return;
-            }
+				task.querySelector('.task__footer-submit').addEventListener('click', async (event) => {
+					event.preventDefault();
+					event.stopPropagation();
+					task.classList.remove('task--edit');
 
-            event.preventDefault();
-            deleteBySelector('#create-group');
+					const target = event.target;
+					const data = {
+						"title": target.querySelector('#task-title').value,
+						"group_id": target.querySelector('#group-select').value,
+						"is_work": target.querySelector("#is_work").checked,
+						"start": target.querySelector("#start").value,
+						"end_time": target.querySelector("#deadline").value || null,
+					};
 
-            const createGroup = createGroupTemplate.content.cloneNode(true);
+					await sendAPI(`/calendar/edit/${id}`, "PATCH", {
+						Authorization: `Bearer ${TOKEN}`
+					}, data);
+				});
 
-            createGroup.querySelector('form').addEventListener('submit', async (evt) => {
-                evt.preventDefault();
-                const target = evt.target;
+                const select = task.querySelector("#group-select");
+                select.innerHTML = "";
 
-                const data = {
-                    "title": target.querySelector('#group-title').value,
-                    "color": target.querySelector("#group-color").value
-                };
+                const fragment = document.createDocumentFragment();
 
-                console.log(data);
-                const response = await sendAPI(`/calendar/group/create`, "POST", {
-                    Authorization: `Bearer ${localStorage.getItem('user')}`
-                }, data);
+                USER_GROUPS.forEach(({id, title}) => {
+                    const option = document.createElement('option');
+                    option.value = id;
+                    option.textContent = title;
+                    fragment.append(option);
+                });
+                select.appendChild(fragment);
 
-                if (Math.floor(response.status / 100) === 2) {
-                    deleteBySelector('#create-group');
-                }
-            });
-            column.appendChild(createGroup);
-        });
-    });
+                select.value = group.id;
 
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
-            deleteBySelector('#create-group');
-            deleteBySelector('#create-task');
-        }
-    })
+				task.addEventListener('click', () => {
+					task.classList.add('task--edit');
+				});
 
-    tasks.forEach((task) => {
-        task.addEventListener('click', (event) => {
-            event.preventDefault();
-            task.classList.toggle('task--edit');
-        });
-    });
+				column.appendChild(task);
+			});
+		});
+
+		const color2 = [44, 40, 31];
+		const color1 = [231, 207, 181];
+		const percentage = result.percentage;
+		const w2 = 1 - percentage;
+		const rgb = [Math.round(color1[0] * percentage + color2[0] * w2),
+			Math.round(color1[1] * percentage + color2[1] * w2),
+			Math.round(color1[2] * percentage + color2[2] * w2)
+		];
+
+		balanceLine.style.background = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+		balanceLine.style.left = `${percentage * 100}%`;
+	};
+
+	await setUpCalendar(ACTIVE_DATE);
+	await setGroups();
+
+	const prevWeekBtn = document.querySelector('.controllers__week-prev');
+	const nextWeekBtn = document.querySelector('.controllers__week-next');
+	const controller = document.querySelector('.controllers__week-text');
+
+	controller.addEventListener('click', (event) => {
+		event.preventDefault();
+		ACTIVE_DATE = new Date;
+		setUpCalendar(ACTIVE_DATE);
+	});
+
+	prevWeekBtn.addEventListener('click', (event) => {
+		event.preventDefault();
+		ACTIVE_DATE.setDate(ACTIVE_DATE.getDate() - 7);
+		setUpCalendar(ACTIVE_DATE);
+	});
+
+	nextWeekBtn.addEventListener('click', (event) => {
+		event.preventDefault();
+		ACTIVE_DATE.setDate(ACTIVE_DATE.getDate() + 7);
+		setUpCalendar(ACTIVE_DATE);
+	});
+
+	columns.forEach((column, index) => {
+		column.addEventListener('click', (event) => {
+			if (!event.target.isSameNode(column)) {
+				return;
+			}
+
+			event.preventDefault();
+			deleteBySelector('#create-task');
+
+			const createForm = createFormTemplate.content.cloneNode(true);
+			createForm.querySelector('form').addEventListener('submit', async (evt) => {
+				evt.preventDefault();
+				const target = evt.target;
+
+				const current = new Date(ACTIVE_DATE.getTime())
+				const end_date = new Date(current.setDate(current.getDate() - current.getDay() + 1 + index));
+
+				const data = {
+					end_date,
+					"title": target.querySelector('#task-title').value,
+					"group_id": target.querySelector('#group-select').value,
+					"is_work": target.querySelector("#is_work").checked,
+					"start": target.querySelector("#start").value,
+					"end_time": target.querySelector("#deadline").value || null,
+				};
+
+				const response = await sendAPI(`/calendar/task/create`, "POST", {
+					Authorization: `Bearer ${localStorage.getItem('user')}`
+				}, data);
+
+				if (Math.floor(response.status / 100) === 2) {
+					deleteBySelector('#create-task');
+
+					await setUpCalendar(ACTIVE_DATE);
+				}
+			});
+			column.appendChild(createForm);
+		});
+
+		column.addEventListener('contextmenu', (event) => {
+			if (!event.target.isSameNode(column)) {
+				return;
+			}
+
+			event.preventDefault();
+			deleteBySelector('#create-group');
+
+			const createGroup = createGroupTemplate.content.cloneNode(true);
+
+			createGroup.querySelector('form').addEventListener('submit', async (evt) => {
+				evt.preventDefault();
+				const target = evt.target;
+
+				const data = {
+					"title": target.querySelector('#group-title').value,
+					"color": target.querySelector("#group-color").value
+				};
+
+				const response = await sendAPI(`/calendar/group/create`, "POST", {
+					Authorization: `Bearer ${localStorage.getItem('user')}`
+				}, data);
+
+				if (Math.floor(response.status / 100) === 2) {
+					deleteBySelector('#create-group');
+					await setGroups();
+				}
+			});
+			column.appendChild(createGroup);
+		});
+	});
+
+	document.addEventListener('keydown', (event) => {
+		if (event.key === 'Escape') {
+			deleteBySelector('#create-group');
+			deleteBySelector('#create-task');
+		}
+	});
 });

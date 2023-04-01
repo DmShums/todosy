@@ -466,6 +466,24 @@ label {
     margin-bottom: 13px;
 }
 
+.task .text {
+    display: flex;
+    width: 100%;
+}
+
+.task .input {
+    display: none;
+}
+
+.task--edit .input {
+    display: flex;
+    width: 100%;
+}
+
+.task--edit .text {
+    display: none;
+}
+
 .task__heading-wrapper,
 .task__footer {
     padding: 7px 12px;
@@ -475,12 +493,17 @@ label {
     justify-content: space-between;
 }
 
+.task__footer-wrapper {
+    display: flex;
+}
+
 .task__footer {
     justify-content: center;
     font-weight: 400;
     line-height: 24px;
     color: #D4D4D4;
     border: 0;
+    flex-grow: 1;
 }
 
 .task-name {
@@ -488,8 +511,18 @@ label {
     color: #D4D4D4;
     border: 0;
     border-bottom: 1px solid #D4D4D4;
+    flex-grow: 1;
 }
 
+.task-delete {
+    background-color: transparent;
+    border: 0;
+    width: auto !important;
+}
+
+.task-delete svg {
+    width: 24px;
+}
 
 .task__heading {
     font-weight: 600;
@@ -580,4 +613,5 @@ label {
     left: 35%;
     background: #28282A;
     transform: translateX(-50%);
+    transition: all .4s;
 }

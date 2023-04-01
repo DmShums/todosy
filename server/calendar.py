@@ -55,6 +55,7 @@ def calendar_task_create():
 
     return json.dumps(result, default=str), 201
 
+
 @calendar_bp.route('/calendar/task/delete/<id>', methods=['DELETE'])
 def calendar_task_edit(id: int):
     try:
@@ -106,14 +107,16 @@ def get_tasks(date_day: str):
 
         query = []
         work_time = 1
-        leisure_time = 0
+        leisure_time = 1
         for week_date in (local_date + timedelta(days=x) for x in range(7)):
             day = []
 
-            for task in Task.select().where((week_date == Task.end_date) & (Task.owner == owner)).order_by(Task.end_time):
+            for task in Task.select().where((week_date == Task.end_date) & (Task.owner == owner)).order_by(
+                    Task.end_time):
                 if task:
                     task_dict = model_to_dict(task)
                     day.append({
+                        'id': task_dict['id'],
                         'end_date': task_dict['end_date'],
                         'end_time': task_dict['end_time'],
                         'is_work': task_dict['is_work'],
@@ -134,11 +137,12 @@ def get_tasks(date_day: str):
             query.append(day)
 
         percentage = (1 + (work_time * 1.618 - leisure_time) /
-                        (work_time * 1.618 + leisure_time)) / 2
+                      (work_time * 1.618 + leisure_time)) / 2
 
         return json.dumps({'query': query, 'percentage': percentage}, default=str), 200
 
     return json.dumps({"message": "Bad request"}), 400
+
 
 @calendar_bp.route('/calendar/day/get/<date_day>', methods=['GET'])
 def day_summary(date_day: str):
@@ -162,8 +166,8 @@ def day_summary(date_day: str):
                     leisure_time += task_dict['overall']
 
                 if task_dict['group']['title'] not in groups_time:
-                    groups_time[task_dict['group']['title']]={'time': task_dict['overall'],
-                                                              'color': task_dict['group']['color']}
+                    groups_time[task_dict['group']['title']] = {'time': task_dict['overall'],
+                                                                'color': task_dict['group']['color']}
                 else:
                     groups_time[task_dict['group']['title']]['time'] += task_dict['overall']
 
@@ -179,31 +183,35 @@ def day_summary(date_day: str):
     return json.dumps({"message": "Bad request"}), 400
 
 
-@calendar_bp.route('/calendar/grop/get', methods=['GET'])
+@calendar_bp.route('/calendar/groups/get', methods=['GET'])
 def get_groups():
     try:
         owner = get_user(request)
     except (ValueError, IndexError, AttributeError):
         return json.dumps({"message": "Authorization required"}), 403
+
     query = []
-    groups=[{
-                'title' : 'Work',
-                'color' : '#ff0000',
-                'owner_id' : owner
-            },
-            {
-                'title' : 'Leisure',
-                'color' : '#00FF00',
-                'owner_id' : owner
-            }
-            ]
+    groups = [
+        {
+            'id': 1,
+            'title': 'Work',
+            'color': '#ff0000',
+        },
+        {
+            'id': 2,
+            'title': 'Leisure',
+            'color': '#00FF00',
+        }
+    ]
+
     for group in Group.select().where(Group.owner_id == owner):
         if group:
             group_dict = model_to_dict(group)
             groups.append({
-                'title' : group_dict['title'],
-                'color' : group_dict['color'],
-                'owner_id' : group_dict['owner_id']
+                'id': group_dict['id'],
+                'title': group_dict['title'],
+                'color': group_dict['color'],
             })
+
     query.append(groups)
     return json.dumps(query, default=str), 200
