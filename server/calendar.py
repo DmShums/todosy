@@ -166,8 +166,10 @@ def day_summary(date_day: str):
                     leisure_time += task_dict['overall']
 
                 if task_dict['group']['title'] not in groups_time:
-                    groups_time[task_dict['group']['title']] = {'time': task_dict['overall'],
-                                                                'color': task_dict['group']['color']}
+                    groups_time[task_dict['group']['title']] = {
+                        'time': task_dict['overall'],
+                        'color': task_dict['group']['color']
+                    }
                 else:
                     groups_time[task_dict['group']['title']]['time'] += task_dict['overall']
 
@@ -175,7 +177,7 @@ def day_summary(date_day: str):
         respond = {
             "groups_time": groups_time,
             "spent_time": spent_time,
-            "working_rime": working_time,
+            "working_time": working_time,
             "leisure_time": leisure_time
         }
         return json.dumps(respond, default=str), 200

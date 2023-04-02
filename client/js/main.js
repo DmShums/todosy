@@ -5,6 +5,16 @@ Date.prototype.isSameDateAs = function(pDate) {
 		this.getDate() === pDate.getDate()
 	);
 }
+const msToTime = (duration) => {
+  let
+	minutes = Math.floor((duration / 60) % 60),
+	hours = Math.floor((duration / (60 * 60)) % 24);
+
+  hours = (hours < 10) ? "0" + hours : hours;
+  minutes = (minutes < 10) ? "0" + minutes : minutes;
+
+  return hours + ":" + minutes;
+};
 
 const LOCAL_STORAGE_CELL = 'user'
 const TOKEN = localStorage.getItem(LOCAL_STORAGE_CELL)
@@ -118,8 +128,11 @@ window.addEventListener('load', async () => {
 		const today = new Date();
 		const curr = new Date(active_date.getTime()); // get current date
 
-		const mondayDate = new Date(curr.setDate(curr.getDate() - curr.getDay() + 1));
-		const sundayDate = new Date(curr.setDate(curr.getDate() - curr.getDay() + 7)); // First day is the day of the month - the day of the week
+		const day = curr.getDay();
+		const diff = curr.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
+
+		const mondayDate = new Date(curr.setDate(diff));
+		const sundayDate = new Date(curr.setDate(curr.getDate() - curr.getDay() + 7));
 
 		controller.textContent = `${mondayDate.toLocaleString('default', {month: 'long', day: 'numeric'})} — `;
 		controller.textContent += sundayDate.toLocaleString('default', {
@@ -136,7 +149,79 @@ window.addEventListener('load', async () => {
 			if (today.isSameDateAs(day)) {
 				heading.classList.add('table__heading--today');
 			}
+
+			heading.addEventListener('click', async (event) => {
+				event.preventDefault();
+				const formattedDate = day.toISOString().split('T')[0]
+				const result = await sendAPI(`/calendar/day/get/${formattedDate}`, "GET", {
+					Authorization: `Bearer ${TOKEN}`
+				});
+
+
+				if (result.ok) {
+					const response = await result.json();
+					const summary = document.querySelector('.summary')
+
+					summary.querySelector('.summary__title').textContent = `${day.toLocaleDateString()} summary`;
+					summary.querySelector('.summary--spent').textContent = msToTime(response.spent_time);
+					summary.querySelector('.summary--working').textContent = msToTime(response.working_time);
+					summary.querySelector('.summary--leisure').textContent = msToTime(response.leisure_time);
+
+					summary.classList.remove('hidden');
+
+					summary.querySelector('.summary__close').addEventListener('click', (event) => {
+						event.preventDefault();
+
+						const chart = Chart.getChart('summary-chart');
+
+						if (chart) {
+							chart.destroy()
+						}
+
+						summary.classList.add('hidden');
+					});
+
+					const canvas = document.getElementById('summary-chart');
+					const chart = Chart.getChart('summary-chart');
+
+					if (chart) {
+						chart.destroy()
+					}
+
+					new Chart(canvas, {
+						type: 'pie',
+						data: {
+						  datasets: [{
+							labels: Object.keys(response.groups_time),
+							data: Object.values(response.groups_time).map((group) => group.time),
+							backgroundColor: Object.values(response.groups_time).map((group) => group.color),
+							hoverOffset: 4
+						  }]
+						},
+
+						options: {
+							responsive: true,
+							legend: {
+								display: false,
+							},
+							plugins: {
+								tooltip: {
+									callbacks: {
+										label: function (tooltipItem) {
+											const dataset = tooltipItem.dataset;
+											const index = tooltipItem.dataIndex;
+											return `${dataset.labels[index]}: ${msToTime(dataset.data[index])} hours`;
+										}
+									}
+								}
+							}
+						}
+					});
+
+				}
+			});
 		});
+
 
 		// get base info
 		const dayColumns = document.querySelectorAll('.table__date-tasks');
@@ -281,8 +366,12 @@ window.addEventListener('load', async () => {
 				evt.preventDefault();
 				const target = evt.target;
 
-				const current = new Date(ACTIVE_DATE.getTime())
-				const end_date = new Date(current.setDate(current.getDate() - current.getDay() + 1 + index));
+				const current = new Date(ACTIVE_DATE.getTime()); // get current date
+
+				const day = current.getDay();
+				const diff = current.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
+
+				const end_date = new Date(current.setDate(diff + index));
 
 				const data = {
 					end_date,
