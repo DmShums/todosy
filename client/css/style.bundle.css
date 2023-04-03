@@ -711,14 +711,6 @@ label {
   display: none;
 }
 
-/* .out-window{
-  position: relative;
-  transform: translate(-50%, -50%);
-  width: 50%;
-  height: 50%;
-
-} */
-
 #popup-btn{
   margin-top: 20px; 
   width: 40%; 

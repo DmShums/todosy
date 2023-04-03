@@ -435,6 +435,7 @@ window.addEventListener('load', async () => {
 	});
 });
 
+// Log out pop up
 
 function returnBack(){
 	document.querySelector('.out-popup').style = "display: none;"
