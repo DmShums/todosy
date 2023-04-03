@@ -100,7 +100,9 @@ def get_tasks(date_day: str):
             return json.dumps({"message": "Authorization required"}), 403
 
         date_format = datetime.strptime(date_day, '%Y-%m-%d')
-        local_date = date_format - timedelta(days=7)
+        local_date = date_format
+        if date_format.weekday() != 0 :
+            local_date = date_format - timedelta(days=7)
 
         while local_date.weekday() != 0:
             local_date += timedelta(days=1)
@@ -217,3 +219,12 @@ def get_groups():
 
     query.append(groups)
     return json.dumps(query, default=str), 200
+
+@calendar_bp.route('/calendar/user/logout', methods=['GET'])
+def logout():
+    try:
+        owner = get_user(request)
+    except (ValueError, IndexError, AttributeError):
+        return json.dumps({"message": "Authorization required"}), 403
+    
+    
