@@ -434,3 +434,17 @@ window.addEventListener('load', async () => {
 		}
 	});
 });
+
+
+function returnBack(){
+	document.querySelector('.out-popup').style = "display: none;"
+}
+
+function popOutWindow(){
+	document.querySelector('.out-popup').style = "display: block;"
+}
+
+function logOut(){
+	localStorage.removeItem('user');
+	window.location.reload();
+}

@@ -22,8 +22,22 @@
       <link href="{{ url_for('static', filename='./css/style.bundle.css') }}" rel="stylesheet" />
    </head>
    <body>
-      <header class="header">Todosy</header>
+      <header class="header">
+         <p class="header-heading">Todosy</p>
+         <p class="log-out" onclick="popOutWindow()">Log out</p>
+      </header>
       <main class="main">
+         <!-- Out section-->
+         <section class="out-popup">
+            <div class="out-window">
+               <h2>Log out. Are you sure?</h2>
+               <div class="header-buttons">
+                  <button class="return-back__button" id="popup-btn" onclick="returnBack()">No</button>
+                  <button class="log-out__button" id="popup-btn" onclick="logOut()">Yes</button>
+               </div>
+            </div>
+         </section>
+         <!-- Out section-->
          <section class="table">
             <div class="table__headings">
                <button class="table__heading">6 Monday</button>
