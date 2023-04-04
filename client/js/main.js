@@ -6,9 +6,8 @@ Date.prototype.isSameDateAs = function(pDate) {
 	);
 }
 const msToTime = (duration) => {
-  let
-	minutes = Math.floor((duration / 60) % 60),
-	hours = Math.floor((duration / (60 * 60)) % 24);
+  let minutes = Math.floor((duration / 60) % 60);
+  let hours = Math.floor((duration / (60 * 60)) % 24);
 
   hours = (hours < 10) ? "0" + hours : hours;
   minutes = (minutes < 10) ? "0" + minutes : minutes;
@@ -373,13 +372,20 @@ window.addEventListener('load', async () => {
 
 				const end_date = new Date(current.setDate(diff + index));
 
+				const start = target.querySelector("#start").value;
+				const end_time_input = target.querySelector("#deadline");
+				const end_time = end_time_input.value;
+
+				if (start >= end_time) {
+					end_time_input.setCustomValidity("End time must be bigger than start.");
+					return;
+				}
+
 				const data = {
-					end_date,
+					end_date, start, end_time,
 					"title": target.querySelector('#task-title').value,
 					"group_id": target.querySelector('#group-select').value,
 					"is_work": target.querySelector("#is_work").checked,
-					"start": target.querySelector("#start").value,
-					"end_time": target.querySelector("#deadline").value || null,
 				};
 
 				const response = await sendAPI(`/calendar/task/create`, "POST", {
@@ -436,7 +442,6 @@ window.addEventListener('load', async () => {
 });
 
 // Log out pop up
-
 function returnBack(){
 	document.querySelector('.out-popup').style = "display: none;"
 }
