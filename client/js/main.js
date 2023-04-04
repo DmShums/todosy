@@ -288,6 +288,7 @@ window.addEventListener('load', async () => {
 					await sendAPI(`/calendar/edit/${id}`, "PATCH", {
 						Authorization: `Bearer ${TOKEN}`
 					}, data);
+                    await setUpCalendar(ACTIVE_DATE);
 				});
 
                 const select = task.querySelector("#group-select");
