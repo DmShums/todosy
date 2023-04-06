@@ -57,7 +57,7 @@ input{
     }
 }
 
-#submit-btn{
+#submit-btn {
     margin-top: 20px;
     width: 40%;
     color: #28282A;
@@ -65,7 +65,7 @@ input{
     border: 0;
 }
 
-#submit-btn:hover{
+#submit-btn:hover {
     color: white;
     background-color: #28282A !important;
 }

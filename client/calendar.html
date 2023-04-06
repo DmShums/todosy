@@ -17,15 +17,15 @@
          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
          rel="stylesheet"
          />
-      <title>Todosy</title>
-      <script defer="defer" src="{{ url_for('static', filename='./js/main.js') }}"></script>
-      <link href="{{ url_for('static', filename='./css/style.bundle.css') }}" rel="stylesheet" />
+      <title>Calendar | Todosy</title>
+      <link href="{{ url_for('static', filename='./css/calendar.css') }}" rel="stylesheet" />
    </head>
    <body>
       <header class="header">
          <p class="header-heading">Todosy</p>
-         <p class="log-out" onclick="popOutWindow()">Log out</p>
+         <button class="log-out" onclick="popOutWindow()">Log out</button>
       </header>
+
       <main class="main">
          <!-- Out section-->
          <section class="out-popup">
@@ -37,6 +37,7 @@
                </div>
             </div>
          </section>
+
          <!-- Out section-->
          <section class="table">
             <div class="table__headings">
@@ -88,6 +89,7 @@
                </div>
             </section>
          </section>
+
          <section class="controllers">
             <div class="controllers__week">
                <button class="controllers__week-btn controllers__week-prev">
@@ -232,42 +234,42 @@
             <div class="task__data">
                <div class="task__info input">
                   <label class="task__data-text">
-                  <span>Group:</span>
-                  <select id="group-select" class="group-select" name="group-select"></select>
+                      <span>Group:</span>
+                      <select id="group-select" class="group-select" name="group-select"></select>
                   </label>
                </div>
                <p class="task__info task__deadline text">Deadline: hh:mm</p>
                <div class="task__info input">
                   <label class="task__data-text">
-                  <span>Is work:</span>
-                  <input
-                     type="checkbox"
-                     name="is_work"
-                     id="is_work"
-                     class="task-time"
-                     />
+                      <span>Is work:</span>
+                      <input
+                         type="checkbox"
+                         name="is_work"
+                         id="is_work"
+                         class="task-time"
+                         />
                   </label>
                </div>
                <div class="task__info input">
                   <label class="task__data-text">
-                  <span>Start time:</span>
-                  <input
-                     type="time"
-                     name="start"
-                     id="start"
-                     class="task-time"
-                     />
+                      <span>Start time:</span>
+                      <input
+                         type="time"
+                         name="start"
+                         id="start"
+                         class="task-time"
+                         />
                   </label>
                </div>
                <div class="task__info input">
                   <label class="task__data-text">
-                  <span>Deadline:</span>
-                  <input
-                     type="time"
-                     name="deadline"
-                     id="deadline"
-                     class="task-time"
-                     />
+                      <span>Deadline:</span>
+                      <input
+                         type="time"
+                         name="deadline"
+                         id="deadline"
+                         class="task-time"
+                         />
                   </label>
                </div>
             </div>
@@ -277,6 +279,9 @@
             </div>
          </form>
       </template>
-      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+      <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script defer src="{{ url_for('static', filename='./js/utils.js') }}"></script>
+      <script defer src="{{ url_for('static', filename='./js/calendar.js') }}"></script>
    </body>
 </html>

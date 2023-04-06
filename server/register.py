@@ -22,12 +22,13 @@ def register_post():
     user_password = hash_password(body.get("password"))
 
     # save data to database
+    user = User.create(
+        nickname=user_nickname,
+        email=user_email,
+        password=user_password
+    )
     try:
-        user = User.create(
-            nickname=user_nickname,
-            email=user_email,
-            password=user_password
-        )
+        pass
     except IntegrityError:
         return json.dumps({'message': "User with the same email already exist."}), 409
 

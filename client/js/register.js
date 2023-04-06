@@ -1,6 +1,4 @@
 window.addEventListener('load', () => {
-    const LOCAL_STORAGE_CELL = 'user'
-
     if (localStorage.getItem(LOCAL_STORAGE_CELL)) {
         window.location.replace("/calendar");
     }
@@ -8,16 +6,6 @@ window.addEventListener('load', () => {
     const form = document.querySelector('.needs-validation')
     const pswrd = document.getElementById('password');
     const pswrd_confirm = document.getElementById('confirm-pass');
-
-    const sendAPI = async (url, method, body) => {
-        return await fetch(url, {
-            method,
-            headers: {
-                "Content-Type": 'application/json'
-            },
-            body: JSON.stringify(body)
-        });
-    };
 
     form.addEventListener('submit', async (event) => {
         if (pswrd.value !== pswrd_confirm.value) {
@@ -37,7 +25,7 @@ window.addEventListener('load', () => {
 
         form.classList.add('was-validated');
 
-        const result = await sendAPI('/register', "POST", {nickname, email, password});
+        const result = await sendAPI('/register', "POST", {},{nickname, email, password});
         const response = await result.json();
 
         if (result.ok) {

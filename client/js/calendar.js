@@ -1,21 +1,3 @@
-Date.prototype.isSameDateAs = function(pDate) {
-	return (
-		this.getFullYear() === pDate.getFullYear() &&
-		this.getMonth() === pDate.getMonth() &&
-		this.getDate() === pDate.getDate()
-	);
-}
-const msToTime = (duration) => {
-  let minutes = Math.floor((duration / 60) % 60);
-  let hours = Math.floor((duration / (60 * 60)) % 24);
-
-  hours = (hours < 10) ? "0" + hours : hours;
-  minutes = (minutes < 10) ? "0" + minutes : minutes;
-
-  return hours + ":" + minutes;
-};
-
-const LOCAL_STORAGE_CELL = 'user'
 const TOKEN = localStorage.getItem(LOCAL_STORAGE_CELL)
 
 if (!TOKEN) {
@@ -23,7 +5,8 @@ if (!TOKEN) {
 }
 
 window.addEventListener('load', async () => {
-	// Templates
+	// CONSTANTS AND VARIABLES
+	// templates
 	const taskTemplate = document.querySelector('#task-template');
 	const createFormTemplate = document.querySelector('#create-form');
 	const createGroupTemplate = document.querySelector('#create-group');
@@ -34,31 +17,7 @@ window.addEventListener('load', async () => {
 	// wrappers
 	const columns = document.querySelectorAll('.table__date-tasks');
 
-	// utils
-	const deleteBySelector = (selector) => {
-		const prevCreate = document.querySelector(selector);
-
-		if (prevCreate) {
-			prevCreate.parentElement.removeChild(prevCreate);
-		}
-	}
-
-	const sendAPI = async (url, method, headers = {}, body = null) => {
-		const params = {
-			method,
-			headers: {
-				"Content-Type": 'application/json',
-				...headers
-			},
-		};
-
-		if (body && Object.keys(body).length) {
-			params['body'] = JSON.stringify(body);
-		}
-
-		return await fetch(url, params);
-	}
-
+	// additional functions
     const getGroups = async () => {
         const result = await sendAPI('/calendar/groups/get', 'GET', {
 			Authorization: `Bearer ${TOKEN}`
@@ -124,6 +83,7 @@ window.addEventListener('load', async () => {
 
 		const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
+		// get date of monday by date
 		const today = new Date();
 		const curr = new Date(active_date.getTime()); // get current date
 
@@ -133,12 +93,11 @@ window.addEventListener('load', async () => {
 		const mondayDate = new Date(curr.setDate(diff));
 		const sundayDate = new Date(curr.setDate(curr.getDate() - curr.getDay() + 7));
 
+		// set previous data
 		controller.textContent = `${mondayDate.toLocaleString('default', {month: 'long', day: 'numeric'})} — `;
-		controller.textContent += sundayDate.toLocaleString('default', {
-			month: 'long',
-			day: 'numeric'
-		});
+		controller.textContent += sundayDate.toLocaleString('default', {month: 'long', day: 'numeric'});
 
+		// set tasks for each day
 		tableHeadings.forEach((heading, idx) => {
 			const day = new Date(mondayDate.getTime());
 			day.setDate(mondayDate.getDate() + idx)
@@ -149,6 +108,7 @@ window.addEventListener('load', async () => {
 				heading.classList.add('table__heading--today');
 			}
 
+			// show info on heading click
 			heading.addEventListener('click', async (event) => {
 				event.preventDefault();
 				const formattedDate = day.toISOString().split('T')[0]
@@ -216,7 +176,6 @@ window.addEventListener('load', async () => {
 							}
 						}
 					});
-
 				}
 			});
 		});
@@ -236,14 +195,15 @@ window.addEventListener('load', async () => {
 		dayColumns.forEach((column, index) => {
 			column.innerHTML = "";
 
-			result.query[index].forEach(({
-				id,
-				title,
-				end_time,
-				start_time,
-				is_work,
-				group
-			}) => {
+			result.query[index].forEach((task_info) => {
+				const {
+					id,
+					title,
+					end_time,
+					start_time,
+					is_work,
+					group
+				} = task_info;
 				const task = taskTemplate.content.cloneNode(true).querySelector('.task');
 
 				task.querySelector('.task__heading').textContent = title;
@@ -287,7 +247,6 @@ window.addEventListener('load', async () => {
 					await sendAPI(`/calendar/task/edit/${id}`, "PATCH", {
 						Authorization: `Bearer ${TOKEN}`
 					}, data);
-                    console.log(data)
                     await setUpCalendar(ACTIVE_DATE);
 				});
 
@@ -390,7 +349,7 @@ window.addEventListener('load', async () => {
 				};
 
 				const response = await sendAPI(`/calendar/task/create`, "POST", {
-					Authorization: `Bearer ${localStorage.getItem('user')}`
+					Authorization: `Bearer ${TOKEN}`
 				}, data);
 
 				if (Math.floor(response.status / 100) === 2) {
