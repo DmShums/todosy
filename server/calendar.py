@@ -227,20 +227,18 @@ def logout():
     except (ValueError, IndexError, AttributeError):
         return json.dumps({"message": "Authorization required"}), 403
 
-@calendar_bp.route('/calendar/edit/<id>', methods = ['POST'])
+@calendar_bp.route('/calendar/task/edit/<task_id>', methods = ['PATCH'])
 def edit(task_id):
     try:
         owner = get_user(request)
         new_task_json = request.json
+        print(task_id)
 
         task = Task.update({Task.title : new_task_json['title'],
-                            Task.description : new_task_json['description'],
                             Task.is_work : new_task_json['is_work'],
-                            Task.group : new_task_json['group'],
-                            Task.start_time : new_task_json['start_time'],
-                            Task.end_date : new_task_json['end_date'],
-                            Task.end_time : new_task_json['end_time'],
-                            Task.overall : new_task_json['overall']}).where(Task.id == task_id)
+                            Task.group : new_task_json['group_id'],
+                            Task.start_time : new_task_json['start'],
+                            Task.end_time : new_task_json['end_time']}).where((Task.id == task_id) & (Task.owner == owner)).execute()
         return json.dumps(task, default = str), 200
     except (ValueError, IndexError, AttributeError):
         return json.dumps({"message": "Authorization required"}), 403

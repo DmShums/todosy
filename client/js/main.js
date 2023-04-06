@@ -271,9 +271,8 @@ window.addEventListener('load', async () => {
 					task.classList.remove('task--edit');
 				});
 
-				task.querySelector('.task__footer-submit').addEventListener('click', async (event) => {
+				task.addEventListener('submit', async (event) => {
 					event.preventDefault();
-					event.stopPropagation();
 					task.classList.remove('task--edit');
 
 					const target = event.target;
@@ -285,9 +284,10 @@ window.addEventListener('load', async () => {
 						"end_time": target.querySelector("#deadline").value || null,
 					};
 
-					await sendAPI(`/calendar/edit/${id}`, "PATCH", {
+					await sendAPI(`/calendar/task/edit/${id}`, "PATCH", {
 						Authorization: `Bearer ${TOKEN}`
 					}, data);
+                    console.log(data)
                     await setUpCalendar(ACTIVE_DATE);
 				});
 
