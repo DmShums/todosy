@@ -378,7 +378,7 @@ label {
     left: 0;
     width: 100%;
     z-index: 2;
-    font-size: 20px;
+    font-size: 1.25rem;
 }
 
 .main {
@@ -418,7 +418,7 @@ label {
 .summary__title {
     margin: 0;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 1rem;
     line-height: 24px;
 }
 
@@ -544,6 +544,10 @@ label {
     display: none;
 }
 
+.group-select {
+    max-width: 100px;
+}
+
 .task__heading-wrapper,
 .task__footer {
     padding: 7px 12px;
@@ -588,7 +592,7 @@ label {
 .task__heading {
     font-weight: 600;
     margin: 0;
-    font-size: 16px;
+    font-size: 1rem;
 }
 
 .task__data {
@@ -738,4 +742,29 @@ label {
   color: white; 
   background-color: #28282A;
   border: #ffffff 1px solid;
+}
+
+@media screen and (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+
+    .table {
+        width: auto;
+        position: relative;
+        overflow-x: scroll;
+    }
+
+    .table__headings {
+        position: absolute;
+        width: auto;
+    }
+
+
+    .table__heading,
+    .table__date-tasks {
+        width: 200px;
+        position: relative;
+        flex-shrink: 0;
+    }
 }
