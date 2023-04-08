@@ -32,7 +32,6 @@ def calendar_task_create():
     is_work = data.get("is_work")
     end_time = data.get("end_time")
     end_date = data.get("end_date")
-    is_done = data.get("is_done")
 
     overall = None
 
@@ -51,7 +50,7 @@ def calendar_task_create():
                        end_date=end_date,
                        end_time=end_time,
                        overall=overall,
-                       is_done=is_done)
+                       is_done=False)
 
     result = model_to_dict(task, exclude=[Task.group.owner, Task.owner])
 
