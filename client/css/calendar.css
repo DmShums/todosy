@@ -593,6 +593,15 @@ label {
     font-weight: 600;
     margin: 0;
     font-size: 1rem;
+    text-align: left;
+    border: 0;
+    background-color: transparent;
+    color: #D4D4D4;
+    display: block;
+}
+
+.heading--done {
+    text-decoration: line-through;
 }
 
 .task__data {

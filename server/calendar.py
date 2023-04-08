@@ -32,6 +32,7 @@ def calendar_task_create():
     is_work = data.get("is_work")
     end_time = data.get("end_time")
     end_date = data.get("end_date")
+    is_done = data.get("is_done")
 
     overall = None
 
@@ -41,36 +42,35 @@ def calendar_task_create():
         overall = end_time - start_time
         overall = overall.seconds
 
-    task = Task.create(
-        title=title,
-        description='123',
-        owner=owner,
-        is_work=is_work,
-        group=group_id,
-        start_time=start,
-        end_date=end_date,
-        end_time=end_time,
-        overall=overall
-    )
+    task = Task.create(title=title,
+                       description='123',
+                       owner=owner,
+                       is_work=is_work,
+                       group=group_id,
+                       start_time=start,
+                       end_date=end_date,
+                       end_time=end_time,
+                       overall=overall,
+                       is_done=is_done)
 
     result = model_to_dict(task, exclude=[Task.group.owner, Task.owner])
 
     return json.dumps(result, default=str), 201
 
 
-@calendar_bp.route('/calendar/task/delete/<task_id>', methods=['DELETE'])
-def calendar_task_edit(task_id: int):
+@calendar_bp.route('/calendar/task/delete/<id>', methods=['DELETE'])
+def calendar_task_edit(id: int):
     try:
         owner = get_user(request)
     except (ValueError, IndexError, AttributeError):
         return json.dumps({"message": "Authorization required"}), 403
 
     try:
-        Task.delete().where((task_id == Task.id) & (Task.owner == owner)).execute()
+        Task.delete().where((id == Task.id) & (Task.owner == owner)).execute()
     except:
         return json.dumps({"message": "Task with such id not found"}), 404
 
-    return json.dumps({"message": "Task successfully deleted"}), 200
+    return json.dumps({"message": "Task successfuly deleted"}), 200
 
 
 @calendar_bp.route('/calendar/group/create', methods=['POST'])
@@ -85,11 +85,9 @@ def calendar_group_create():
     title = data.get("title")
     color = data.get("color")
 
-    group = Group.create(
-        title=title,
-        color=color,
-        owner=owner
-    )
+    group = Group.create(title=title,
+                         color=color,
+                         owner=owner)
 
     result = model_to_dict(group, exclude=[Group.owner.password])
     return json.dumps(result, default=str), 201
@@ -105,7 +103,6 @@ def get_tasks(date_day: str):
 
         date_format = datetime.strptime(date_day, '%Y-%m-%d')
         local_date = date_format
-
         if date_format.weekday() != 0:
             local_date = date_format - timedelta(days=7)
 
@@ -115,7 +112,6 @@ def get_tasks(date_day: str):
         query = []
         work_time = 1
         leisure_time = 1
-
         for week_date in (local_date + timedelta(days=x) for x in range(7)):
             day = []
 
@@ -130,6 +126,7 @@ def get_tasks(date_day: str):
                         'is_work': task_dict['is_work'],
                         'title': task_dict['title'],
                         'overall': task_dict['overall'],
+                        'is_done': task_dict['is_done'],
                         'start_time': task_dict['start_time'],
                         'group': {
                             'color': task_dict['group']['color'],
@@ -165,25 +162,21 @@ def day_summary(date_day: str):
         working_time = 0
         leisure_time = 0
         groups_time = {}
-
         for task in Task.select().where((date_format == Task.end_date) & (Task.owner == owner)):
             if task:
                 task_dict = model_to_dict(task)
-
                 if task_dict['is_work']:
                     working_time += task_dict['overall']
                 else:
                     leisure_time += task_dict['overall']
 
-                group_title = task_dict['group']['title']
-
-                if group_title not in groups_time:
-                    groups_time[group_title] = {
+                if task_dict['group']['title'] not in groups_time:
+                    groups_time[task_dict['group']['title']] = {
                         'time': task_dict['overall'],
                         'color': task_dict['group']['color']
                     }
                 else:
-                    groups_time[group_title]['time'] += task_dict['overall']
+                    groups_time[task_dict['group']['title']]['time'] += task_dict['overall']
 
         spent_time = working_time + leisure_time
         respond = {
@@ -209,12 +202,12 @@ def get_groups():
         {
             'id': 1,
             'title': 'Work',
-            'color': '#412344',
+            'color': '#ff0000',
         },
         {
             'id': 2,
             'title': 'Leisure',
-            'color': '#2D3923',
+            'color': '#00FF00',
         }
     ]
 
@@ -231,21 +224,44 @@ def get_groups():
     return json.dumps(query, default=str), 200
 
 
+@calendar_bp.route('/calendar/user/logout', methods=['GET'])
+def logout():
+    try:
+        owner = get_user(request)
+    except (ValueError, IndexError, AttributeError):
+        return json.dumps({"message": "Authorization required"}), 403
+
+
 @calendar_bp.route('/calendar/task/edit/<task_id>', methods=['PATCH'])
 def edit(task_id):
     try:
         owner = get_user(request)
         new_task_json = request.json
 
-        task = Task.update({
-            Task.title: new_task_json['title'],
-            Task.is_work: new_task_json['is_work'],
-            Task.group: new_task_json['group_id'],
-            Task.start_time: new_task_json['start'],
-            Task.end_time: new_task_json['end_time']
-        }) \
-            .where((Task.id == task_id) & (Task.owner == owner)) \
-            .execute()
-        return json.dumps(task, default=str), 200
+        task = Task.update({Task.title: new_task_json['title'],
+                            Task.is_work: new_task_json['is_work'],
+                            Task.group: new_task_json['group_id'],
+                            Task.start_time: new_task_json['start'],
+                            Task.end_time: new_task_json['end_time'],
+                            Task.is_done: new_task_json['is_done']}).where(
+            (Task.id == task_id) & (Task.owner == owner)).execute()
+        return json.dumps(task, default=str), 201
     except (ValueError, IndexError, AttributeError):
         return json.dumps({"message": "Authorization required"}), 403
+
+
+@calendar_bp.route('/calendar/task/done/<task_id>', methods=['PATCH'])
+def done(task_id):
+    try:
+        owner = get_user(request)
+    except (ValueError, IndexError, AttributeError) as e:
+        return json.dumps({"message": "Authorization required"}), 403
+
+    task_is_done = Task.select(Task.is_done).where((Task.id == task_id) & (Task.owner == owner)).get()
+    is_done = not model_to_dict(task_is_done)['is_done']
+
+    task = Task.update({Task.is_done: is_done}).where(
+        (Task.id == task_id) & (Task.owner == owner)).execute()
+
+    return json.dumps(task, default=str), 201
+

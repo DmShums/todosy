@@ -202,11 +202,13 @@ window.addEventListener('load', async () => {
 					end_time,
 					start_time,
 					is_work,
-					group
+					group,
+					is_done
 				} = task_info;
 				const task = taskTemplate.content.cloneNode(true).querySelector('.task');
 
 				task.querySelector('.task__heading').textContent = title;
+				task.querySelector('.task__heading').classList.add(is_done && 'heading--done');
 				task.querySelector('.task__deadline').textContent = `Deadline: ${end_time.slice(0, 5)}`;
 				task.style.backgroundColor = group.color;
 
@@ -265,8 +267,18 @@ window.addEventListener('load', async () => {
 
                 select.value = group.id;
 
-				task.addEventListener('click', () => {
+				task.querySelector(".task__data").addEventListener('click', () => {
 					task.classList.add('task--edit');
+				});
+
+				task.querySelector(".task__heading").addEventListener('click', async () => {
+					const result = await sendAPI(`/calendar/task/done/${id}`, "PATCH", {
+						Authorization: `Bearer ${TOKEN}`,
+					});
+
+					if (result.status === 201) {
+						await setUpCalendar(ACTIVE_DATE);
+					}
 				});
 
 				column.appendChild(task);

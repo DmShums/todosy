@@ -17,3 +17,4 @@ class Task(BaseModel):
     end_date = DateField()
     end_time = TimeField()
     overall = IntegerField()
+    is_done = BooleanField()
