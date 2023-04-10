@@ -2,10 +2,16 @@
 import os
 from peewee import MySQLDatabase, Model
 from dotenv import load_dotenv
+from playhouse.shortcuts import ReconnectMixin
 
 load_dotenv(os.path.join(os.path.dirname(__file__), '../../.env'))
 
-db = MySQLDatabase(
+
+class DB(ReconnectMixin, MySQLDatabase):
+    pass
+
+
+db = DB(
     host=os.environ.get("DB_HOST"),
     user=os.environ.get("DB_USER"),
     password=os.environ.get("DB_PASSWORD"),

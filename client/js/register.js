@@ -7,15 +7,15 @@ window.addEventListener('load', () => {
     const pswrd = document.getElementById('password');
     const pswrd_confirm = document.getElementById('confirm-pass');
 
+    pswrd_confirm.addEventListener('input', (event) => {
+        pswrd_confirm.setCustomValidity(
+            pswrd.value !== pswrd_confirm.value ?
+                "Passwords do not match." :
+                ""
+        );
+    })
+
     form.addEventListener('submit', async (event) => {
-        if (pswrd.value !== pswrd_confirm.value) {
-            pswrd_confirm.setCustomValidity("Passwords do not match.");
-        }
-
-        if (!form.checkValidity()) {
-            return;
-        }
-
         event.preventDefault();
         event.stopPropagation();
 
@@ -34,7 +34,7 @@ window.addEventListener('load', () => {
             window.location.replace("/calendar");
             return;
         }
-        
+
         alert(response.message);
     });
 });

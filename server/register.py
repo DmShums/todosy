@@ -1,5 +1,4 @@
 """Register module"""
-# import server.db
 import json
 import os
 
@@ -21,16 +20,17 @@ def register_post():
     user_email = body.get("email")
     user_password = hash_password(body.get("password"))
 
-    # save data to database
-    user = User.create(
-        nickname=user_nickname,
-        email=user_email,
-        password=user_password
-    )
     try:
-        pass
+        # save data to database
+        user = User.create(
+            nickname=user_nickname,
+            email=user_email,
+            password=user_password
+        )
     except IntegrityError:
         return json.dumps({'message': "User with the same email already exist."}), 409
+    except:
+        return json.dumps({'message': "Something went wrong. Try again later"}), 500
 
     user_jwt = jwt.encode({"id": user.id}, os.environ.get("SECRET"), algorithm="HS256")
     return json.dumps({"user": user_jwt}, default=str), 201

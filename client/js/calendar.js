@@ -111,6 +111,16 @@ window.addEventListener('load', async () => {
 			// show info on heading click
 			heading.addEventListener('click', async (event) => {
 				event.preventDefault();
+				const curr = new Date(active_date.getTime()); // get current date
+
+				const curr_day = curr.getDay();
+				const diff = curr.getDate() - curr_day + (curr_day === 0 ? -6 : 1); // adjust when day is sunday
+
+				const mondayDate = new Date(curr.setDate(diff));
+
+				const day = new Date(mondayDate.getTime());
+				day.setDate(mondayDate.getDate() + idx)
+
 				const formattedDate = day.toISOString().split('T')[0]
 				const result = await sendAPI(`/calendar/day/get/${formattedDate}`, "GET", {
 					Authorization: `Bearer ${TOKEN}`
@@ -267,11 +277,13 @@ window.addEventListener('load', async () => {
 
                 select.value = group.id;
 
-				task.querySelector(".task__data").addEventListener('click', () => {
+				task.addEventListener('click', () => {
 					task.classList.add('task--edit');
 				});
 
-				task.querySelector(".task__heading").addEventListener('click', async () => {
+				task.querySelector(".task__heading").addEventListener('click', async (event) => {
+					event.stopPropagation();
+
 					const result = await sendAPI(`/calendar/task/done/${id}`, "PATCH", {
 						Authorization: `Bearer ${TOKEN}`,
 					});
@@ -333,6 +345,18 @@ window.addEventListener('load', async () => {
 			deleteBySelector('#create-task');
 
 			const createForm = createFormTemplate.content.cloneNode(true);
+
+			const start = createForm.querySelector("#start");
+			const end_time_input = createForm.querySelector("#deadline");
+
+			end_time_input.addEventListener('input', () => {
+				end_time_input.setCustomValidity(
+					end_time_input.value <= start.value ?
+						"End time must be bigger than start." :
+						""
+				);
+			})
+
 			createForm.querySelector('form').addEventListener('submit', async (evt) => {
 				evt.preventDefault();
 				const target = evt.target;
@@ -343,15 +367,8 @@ window.addEventListener('load', async () => {
 				const diff = current.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
 
 				const end_date = new Date(current.setDate(diff + index));
-
-				const start = target.querySelector("#start").value;
-				const end_time_input = target.querySelector("#deadline");
-				const end_time = end_time_input.value;
-
-				if (start >= end_time) {
-					end_time_input.setCustomValidity("End time must be bigger than start.");
-					return;
-				}
+				const start = evt.target.querySelector("#start").value;
+				const end_time = evt.target.querySelector("#deadline").value;
 
 				const data = {
 					end_date, start, end_time,

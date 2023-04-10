@@ -223,13 +223,6 @@ def get_groups():
     return json.dumps(query, default=str), 200
 
 
-@calendar_bp.route('/calendar/user/logout', methods=['GET'])
-def logout():
-    try:
-        owner = get_user(request)
-    except (ValueError, IndexError, AttributeError):
-        return json.dumps({"message": "Authorization required"}), 403
-
 
 @calendar_bp.route('/calendar/task/edit/<task_id>', methods=['PATCH'])
 def edit(task_id):
@@ -237,13 +230,25 @@ def edit(task_id):
         owner = get_user(request)
         new_task_json = request.json
 
-        task = Task.update({Task.title: new_task_json['title'],
-                            Task.is_work: new_task_json['is_work'],
-                            Task.group: new_task_json['group_id'],
-                            Task.start_time: new_task_json['start'],
-                            Task.end_time: new_task_json['end_time'],
-                            Task.is_done: new_task_json['is_done']}).where(
-            (Task.id == task_id) & (Task.owner == owner)).execute()
+        overall = None
+        start = new_task_json['start']
+        end_time = new_task_json['end_time']
+
+        if start and end_time:
+            start_time = timedelta(hours=int(start.split(':')[0]), minutes=int(start.split(':')[1]))
+            end_time = timedelta(hours=int(end_time.split(':')[0]), minutes=int(end_time.split(':')[1]))
+            overall = end_time - start_time
+            overall = overall.seconds
+
+        task = Task.update({
+            Task.title: new_task_json['title'],
+            Task.is_work: new_task_json['is_work'],
+            Task.group: new_task_json['group_id'],
+            Task.start_time: new_task_json['start'],
+            Task.end_time: new_task_json['end_time'],
+            Task.overall: overall,
+        }).where((Task.id == task_id) & (Task.owner == owner)).execute()
+
         return json.dumps(task, default=str), 201
     except (ValueError, IndexError, AttributeError):
         return json.dumps({"message": "Authorization required"}), 403
