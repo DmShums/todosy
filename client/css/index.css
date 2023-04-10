@@ -1,0 +1,99 @@
+body, html {
+    padding: 0;
+    margin: 0;
+    background-color: #4B4A52 !important;
+    color: #D4D4D4 !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 16px !important;
+    text-align: center;
+    line-height: 24px !important;
+    height: 100vh !important;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+button {
+    cursor: pointer;
+}
+
+.header {
+    height: 68px;
+    background: #28282A !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-weight: bold;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+    font-size: 20px;
+}
+
+.content {
+    text-align: center;
+    width: 100%;
+    height: 68px;
+    font-size: 20px;
+    margin-top: 15% !important;
+}
+
+@media screen and (max-width: 1000px) {
+    .content {
+        margin-top: 25% !important;
+    }
+}
+
+
+h1 {
+    margin-bottom: 2%;
+}
+
+body {
+    margin:auto;
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+}
+
+
+input {
+    width: 30vw !important;
+}
+
+@media screen and (max-width: 800px) {
+    input{
+        width: 60vw !important;
+    }
+}
+
+#sign_up,
+#log_in {
+    margin-top: 2%;
+    color: #28282A;
+    padding: 10px 40px;
+    font-size: 16px;
+    width: 150px;
+    background-color: #E7CFB5;
+    border: 0;
+}
+
+
+#log_in:hover,
+#log_in:active,
+#sign_up:hover,
+#sign_up:active {
+    color: white;
+    background-color: #28282A;
+}

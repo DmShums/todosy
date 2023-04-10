@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width,initial-scale=1" />
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename="/apple-touch-icon.png") }}">
+      <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename="/favicon-32x32.png") }}">
+      <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename="/favicon-16x16.png") }}">
+      <link rel="manifest" href="{{ url_for('static', filename="/site.webmanifest") }}">
+      <link rel="mask-icon" href="{{ url_for('static', filename="/safari-pinned-tab.svg") }}" color="#5bbad5">
+      <meta name="msapplication-TileColor" content="#da532c">
+      <meta name="theme-color" content="#ffffff">
+      <link
+         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+         rel="stylesheet"
+         />
+      <title>Calendar | Todosy</title>
+      <link href="{{ url_for('static', filename='./css/calendar.css') }}" rel="stylesheet" />
+   </head>
+   <body>
+      <header class="header">
+         <p class="header-heading">Todosy</p>
+         <button class="log-out" onclick="popOutWindow()">Log out</button>
+      </header>
+
+      <main class="main">
+         <!-- Out section-->
+         <section class="out-popup">
+            <div class="out-window">
+               <h2>Log out. Are you sure?</h2>
+               <div class="header-buttons">
+                  <button class="return-back__button" id="popup-btn" onclick="returnBack()">No</button>
+                  <button class="log-out__button" id="popup-btn" onclick="logOut()">Yes</button>
+               </div>
+            </div>
+         </section>
+
+         <!-- Out section-->
+         <section class="table">
+            <div class="table__headings">
+               <button class="table__heading">6 Monday</button>
+               <button class="table__heading">7 Tuesday</button>
+               <button class="table__heading">8 Wednesday</button>
+               <button class="table__heading table__heading--today">9 Today</button>
+               <button class="table__heading">10 Friday</button>
+               <button class="table__heading">11 Saturday</button>
+               <button class="table__heading">12 Sunday</button>
+            </div>
+            <div class="table__tasks">
+               <div class="table__date-tasks"></div>
+               <div class="table__date-tasks"></div>
+               <div class="table__date-tasks"></div>
+               <div class="table__date-tasks"></div>
+               <div class="table__date-tasks"></div>
+               <div class="table__date-tasks"></div>
+               <div class="table__date-tasks"></div>
+            </div>
+            <section class="summary hidden">
+               <header class="summary__header">
+                  <h3 class="summary__title">30 March summary</h3>
+                  <button class="summary__close">
+                     <svg viewBox="0 0 12 12" width="12" height="12" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="1" y1="11"
+                           x2="11" y2="1"
+                           stroke="#dadada"
+                           stroke-width="2"></line>
+                        <line x1="1" y1="1"
+                           x2="11" y2="11"
+                           stroke="#dadada"
+                           stroke-width="2"></line>
+                     </svg>
+                  </button>
+               </header>
+               <div class="summary__body">
+                  <dl class="summary__info">
+                     <dt class="summary__info-text">Spent time</dt>
+                     <dd class="summary__info-value summary--spent">HH:mm</dd>
+                     <dt class="summary__info-text">Working time</dt>
+                     <dd class="summary__info-value summary--working">HH:mm</dd>
+                     <dt class="summary__info-text">Leisure time</dt>
+                     <dd class="summary__info-value summary--leisure">HH:mm</dd>
+                  </dl>
+                  <div class="summary__chart">
+                     <canvas id="summary-chart" width="190" height="190"></canvas>
+                  </div>
+               </div>
+            </section>
+         </section>
+
+         <section class="controllers">
+            <div class="controllers__week">
+               <button class="controllers__week-btn controllers__week-prev">
+                  <span class="visually-hidden">Prev button</span>
+                  <svg
+                     width="28"
+                     height="33"
+                     viewBox="0 0 28 33"
+                     fill="none"
+                     xmlns="http://www.w3.org/2000/svg"
+                     >
+                     <path
+                        d="M-8.08661e-07 16.5L27.75 0.47853L27.75 32.5215L-8.08661e-07 16.5Z"
+                        fill="#534D49"></path>
+                  </svg>
+               </button>
+               <button class="controllers__week-text">March 6 - March 12</button>
+               <button class="controllers__week-btn controllers__week-next">
+                  <span class="visually-hidden">Next button</span>
+                  <svg
+                     width="28"
+                     height="33"
+                     viewBox="0 0 28 33"
+                     fill="none"
+                     xmlns="http://www.w3.org/2000/svg"
+                     >
+                     <path
+                        d="M28 16.5L0.250005 32.5215L0.25 0.478535L28 16.5Z"
+                        fill="#534D49"></path>
+                  </svg>
+               </button>
+            </div>
+            <div class="controllers__balance-wrapper">
+               <div class="controllers__balance">
+                  <div class="controllers__balance-line"></div>
+               </div>
+            </div>
+         </section>
+      </main>
+      <template id="create-form">
+         <form id="create-task" class="task__create">
+            <div class="task__heading-wrapper">
+               <input
+                  id="task-title"
+                  placeholder="Task name"
+                  required
+                  class="task-name"
+                  name="name"
+                  />
+            </div>
+            <div class="task__data">
+               <div class="task__info">
+                  <label class="task__data-text">
+                  <span>Group:</span>
+                  <select id="group-select" class="group-select" name="group-select" required></select>
+                  </label>
+               </div>
+               <div class="task__info">
+                  <label class="task__data-text">
+                  <span>Is work:</span>
+                  <input
+                     type="checkbox"
+                     name="is_work"
+                     id="is_work"
+                     class="task-time"
+                     />
+                  </label>
+               </div>
+               <div class="task__info">
+                  <label class="task__data-text">
+                  <span>Start time:</span>
+                  <input
+                     type="time"
+                     name="start"
+                     id="start"
+                     class="task-time"
+                     required
+                     />
+                  </label>
+               </div>
+               <div class="task__info">
+                  <label class="task__data-text">
+                  <span>Deadline:</span>
+                  <input
+                     type="time"
+                     name="deadline"
+                     id="deadline"
+                     class="task-time"
+                     required
+                     />
+                  </label>
+               </div>
+            </div>
+            <div class="task__footer-wrapper input">
+               <button class="task__footer task__footer-cancel" id="footer-cancel" onclick="deleteBySelector('#create-task');">Cancel</button>
+               <button class="task__footer task__footer-submit" type="submit">Create</button>
+            </div>
+         </form>
+      </template>
+      <template id="create-group">
+         <form id="create-group" class="task__create">
+            <div class="task__heading-wrapper">
+               <input
+                  placeholder="Group name"
+                  required
+                  class="task-name"
+                  name="group"
+                  id="group-title"
+                  />
+            </div>
+            <div class="task__data">
+               <div class="task__info">
+                  <label class="task__data-text">
+                  <span>Color:</span>
+                  <input
+                     type="color"
+                     name="color"
+                     id="group-color"
+                     class="task-time"
+                     value="#e66465"
+                     />
+                  </label>
+               </div>
+            </div>
+            <div class="task__footer-wrapper input">
+               <button class="task__footer task__footer-cancel" id="footer-cancel" onclick="deleteBySelector('#create-group');">Cancel</button>
+               <button class="task__footer task__footer-submit" type="submit">Create</button>
+            </div>
+         </form>
+      </template>
+      <template id="task-template">
+         <form class="task">
+            <div class="task__heading-wrapper">
+               <button class="task__heading text">Task name</button>
+               <input
+                  id="task-title"
+                  placeholder="Task name"
+                  required
+                  class="task-name input"
+                  name="name"
+                  />
+               <button class="task-delete input">
+                  <svg width="24" height="24" viewBox="0 0 24 24" stroke="#dadada">
+                     <path d="M14 10V17M10 10V17M6 6V17.8C6 18.9201 6 19.4798 6.21799 19.9076C6.40973 20.2839 6.71547 20.5905 7.0918 20.7822C7.5192 21 8.07899 21 9.19691 21H14.8031C15.921 21 16.48 21 16.9074 20.7822C17.2837 20.5905 17.5905 20.2839 17.7822 19.9076C18 19.4802 18 18.921 18 17.8031V6M6 6H8M6 6H4M8 6H16M8 6C8 5.06812 8 4.60241 8.15224 4.23486C8.35523 3.74481 8.74432 3.35523 9.23438 3.15224C9.60192 3 10.0681 3 11 3H13C13.9319 3 14.3978 3 14.7654 3.15224C15.2554 3.35523 15.6447 3.74481 15.8477 4.23486C15.9999 4.6024 16 5.06812 16 6M16 6H18M18 6H20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+               </button>
+            </div>
+            <div class="task__data">
+               <div class="task__info input">
+                  <label class="task__data-text">
+                      <span>Group:</span>
+                      <select id="group-select" class="group-select" name="group-select"></select>
+                  </label>
+               </div>
+               <p class="task__info task__deadline text">Deadline: hh:mm</p>
+               <div class="task__info input">
+                  <label class="task__data-text">
+                      <span>Is work:</span>
+                      <input
+                         type="checkbox"
+                         name="is_work"
+                         id="is_work"
+                         class="task-time"
+                         />
+                  </label>
+               </div>
+               <div class="task__info input">
+                  <label class="task__data-text">
+                      <span>Start time:</span>
+                      <input
+                         type="time"
+                         name="start"
+                         id="start"
+                         class="task-time"
+                         />
+                  </label>
+               </div>
+               <div class="task__info input">
+                  <label class="task__data-text">
+                      <span>Deadline:</span>
+                      <input
+                         type="time"
+                         name="deadline"
+                         id="deadline"
+                         class="task-time"
+                         />
+                  </label>
+               </div>
+            </div>
+            <div class="task__footer-wrapper input">
+               <button class="task__footer task__footer-cancel">Cancel</button>
+               <button class="task__footer task__footer-submit" type="submit">Update</button>
+            </div>
+         </form>
+      </template>
+
+      <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script defer src="{{ url_for('static', filename='./js/utils.js') }}"></script>
+      <script defer src="{{ url_for('static', filename='./js/calendar.js') }}"></script>
+   </body>
+</html>
