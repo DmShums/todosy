@@ -183,7 +183,10 @@
                   </label>
                </div>
             </div>
-            <button class="task__footer" type="submit">Create</button>
+            <div class="task__footer-wrapper input">
+               <button class="task__footer task__footer-cancel" id="footer-cancel" onclick="deleteBySelector('#create-task');">Cancel</button>
+               <button class="task__footer task__footer-submit" type="submit">Create</button>
+            </div>
          </form>
       </template>
       <template id="create-group">
@@ -211,7 +214,10 @@
                   </label>
                </div>
             </div>
-            <button class="task__footer" type="submit">Create</button>
+            <div class="task__footer-wrapper input">
+               <button class="task__footer task__footer-cancel" id="footer-cancel" onclick="deleteBySelector('#create-group');">Cancel</button>
+               <button class="task__footer task__footer-submit" type="submit">Create</button>
+            </div>
          </form>
       </template>
       <template id="task-template">
