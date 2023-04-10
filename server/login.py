@@ -6,6 +6,7 @@ import os
 
 import jwt
 from flask import render_template, request, Blueprint, url_for
+from flask_cors import cross_origin
 
 from server.models.user import User
 from server.utils import hash_password
@@ -14,6 +15,7 @@ login_bp = Blueprint('login', __name__)
 
 
 @login_bp.route('/login', methods=['POST'])
+@cross_origin()
 def login_post():
     body = request.json
 
