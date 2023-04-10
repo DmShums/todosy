@@ -443,3 +443,12 @@ function logOut(){
 	localStorage.removeItem('user');
 	window.location.reload();
 }
+
+// Info popup
+function returnBackInfo(){
+	document.querySelector('.info-popup').style = "display: none;"
+}
+
+function popOutWindowInfo(){
+	document.querySelector('.info-popup').style = "display: block;"
+}
