@@ -22,12 +22,14 @@
    </head>
    <body>
       <header class="header">
-         <svg class="info" onclick="popOutWindowInfo()" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-            width="24" height="24"
-            viewBox="0,0,256,256"
-            style="fill:#000000;">
-            <g fill="#D4D4D4" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(8,8)"><path d="M16,3c-7.16797,0 -13,5.83203 -13,13c0,7.16797 5.83203,13 13,13c7.16797,0 13,-5.83203 13,-13c0,-7.16797 -5.83203,-13 -13,-13zM16,5c6.08594,0 11,4.91406 11,11c0,6.08594 -4.91406,11 -11,11c-6.08594,0 -11,-4.91406 -11,-11c0,-6.08594 4.91406,-11 11,-11zM15,10v2h2v-2zM15,14v8h2v-8z"></path></g></g>
-         </svg>
+         <button class="info" onclick="popOutWindowInfo()">
+             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                width="24" height="24"
+                viewBox="0,0,256,256"
+                style="fill:#000000;">
+                <g fill="#D4D4D4" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(8,8)"><path d="M16,3c-7.16797,0 -13,5.83203 -13,13c0,7.16797 5.83203,13 13,13c7.16797,0 13,-5.83203 13,-13c0,-7.16797 -5.83203,-13 -13,-13zM16,5c6.08594,0 11,4.91406 11,11c0,6.08594 -4.91406,11 -11,11c-6.08594,0 -11,-4.91406 -11,-11c0,-6.08594 4.91406,-11 11,-11zM15,10v2h2v-2zM15,14v8h2v-8z"></path></g></g>
+             </svg>
+         </button>
          <p class="header-heading">Todosy</p>
          <button class="log-out" onclick="popOutWindow()">Log out</button>
       </header>
@@ -37,23 +39,25 @@
          <section class="info-popup">
             <div class="info-window">
                <div class="info__header">
-                  <h2 class="info-heading">Additional information</h2>
-                  <svg class="close-info" onclick="returnBackInfo()" viewBox="0 0 12 12" width="12" height="12" xmlns="http://www.w3.org/2000/svg">
-                     <line x1="1" y1="11" x2="11" y2="1" stroke="#dadada" stroke-width="2"></line>
-                     <line x1="1" y1="1" x2="11" y2="11" stroke="#dadada" stroke-width="2"></line>
-                  </svg>
+                  <h2 class="info-heading">Guide</h2>
+                  <button class="close-info" onclick="returnBackInfo()">
+                      <svg viewBox="0 0 12 12" width="12" height="12" xmlns="http://www.w3.org/2000/svg">
+                         <line x1="1" y1="11" x2="11" y2="1" stroke="#dadada" stroke-width="2"></line>
+                         <line x1="1" y1="1" x2="11" y2="11" stroke="#dadada" stroke-width="2"></line>
+                      </svg>
+                  </button>
                </div>
                <div class="info__body">
                   <ol>
-                     <li>In the app, you can create and add your own deadlines and tasks. To do this, click on the day column.</li>
+                     <li>In the app, you can create and add your own deadlines and tasks. To do this, click on the day column </li>
                      <li>To create a new group, click on the column with the right-click.</li>
                      <li>If you click on a specific date, the day's analysis appears.</li>
                      <li>In the bottom left, you can switch between weeks. Clicking between the arrows for a week will take you to the current week.</li>
                      <li>At the bottom right, you can analyze the saturation of your week according to the golden mean rule.</li>
-                     <li>To edit a task, click on the deadline</li>
+                     <li>To edit a task, click on the deadline.</li>
                      <li>To mark a task as completed, click on the title.</li>
-                     <li>To get data from CMS Moodle - install this extension and go to the cms page.</li>
-                     <li>You can always return to the instructions in the upper right corner of the program. You can also leave the account there.</li>
+                     <li>To get data from CMS Moodle — install this extension and go to your CMC page.</li>
+                     <li>You can always return to the instructions in the upper left corner of the program.</li>
                   </ol>
                </div>
             </div>
