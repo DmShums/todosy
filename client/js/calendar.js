@@ -6,7 +6,7 @@ if (!TOKEN) {
 
 window.addEventListener('load', async () => {
 	// display info after register
-	if (document.referrer == "https://todosy.pythonanywhere.com/register"){
+	if (document.referrer === "https://todosy.pythonanywhere.com/register"){
 		document.querySelector('.info-popup').style = "display: block;"
 	}
 
