@@ -783,7 +783,6 @@ label {
 .info{
     position: absolute;
     z-index: 3;
-    /* top: 3%; */
     left: 1.5%;
     background-color: transparent;
     border: 0;
@@ -800,9 +799,15 @@ label {
   height: 50%;
   background-color: #302F34;
   border-radius: 8px;
-  overflow: scroll;
+  overflow-y: scroll;
   box-shadow: 1px 5px 10px rgba(0, 0, 0, 0.4);
   display: none;
+}
+
+@media screen and (max-width: 900px){
+  .info-popup{
+    width: 70%;
+  }
 }
 
 

@@ -14,7 +14,12 @@ const sendAPI = async (url, method, headers = {}, body = {}) => {
         params['body'] = JSON.stringify(body);
     }
 
-    return await fetch(url, params);
+    const request = await fetch(url, params)
+    if ((request.status).toString()[0] !== '2'){
+        document.querySelector('')
+    }
+
+    return request;
 };
 
 Date.prototype.isSameDateAs = function(pDate) {
