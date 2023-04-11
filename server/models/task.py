@@ -9,7 +9,6 @@ from server.models.user import User
 class Task(BaseModel):
     """ Task Model """
     title = CharField()
-    description = TextField()
     owner = ForeignKeyField(User)
     is_work = BooleanField()
     group = ForeignKeyField(Group)
@@ -17,4 +16,5 @@ class Task(BaseModel):
     end_date = DateField()
     end_time = TimeField()
     overall = IntegerField()
-    is_done = BooleanField()
+    is_done = BooleanField(default=False)
+    moodle = IntegerField(default=0)

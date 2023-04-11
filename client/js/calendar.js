@@ -220,6 +220,7 @@ window.addEventListener('load', async () => {
 				task.querySelector('.task__heading').textContent = title;
 				task.querySelector('.task__heading').classList.add(is_done && 'heading--done');
 				task.querySelector('.task__deadline').textContent = `Deadline: ${end_time.slice(0, 5)}`;
+				task.querySelector('.task__start-time').textContent = `Start Time: ${start_time.slice(0, 5)}`;
 				task.style.backgroundColor = group.color;
 
 				task.querySelector('.task-name').value = title;

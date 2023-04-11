@@ -48,6 +48,7 @@ def main():
         user = User.create(email="test@gmail.com", name="name", surname="surname", password="super mega pass")
         Group.create(title="Work", color="#412344", owner=user.id)
         Group.create(title="Leisure", color="#2D3923", owner=user.id)
+        Group.create(title="CMS", color="#f98012", owner=user.id)
 
 
 if __name__ == "__main__":

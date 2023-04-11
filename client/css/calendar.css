@@ -398,7 +398,7 @@ label {
 }
 
 .summary {
-    position: absolute;
+    position: fixed;
     right: 10%;
     bottom: 60px;
     background-color: #302F34;
@@ -610,7 +610,7 @@ label {
 
 .task__info {
     width: 100%;
-    margin: 0 0 5px;
+    margin: 3px 0;
 }
 
 .task__data-text {

@@ -41,35 +41,35 @@ def calendar_task_create():
         overall = end_time - start_time
         overall = overall.seconds
 
-    task = Task.create(title=title,
-                       description='123',
-                       owner=owner,
-                       is_work=is_work,
-                       group=group_id,
-                       start_time=start,
-                       end_date=end_date,
-                       end_time=end_time,
-                       overall=overall,
-                       is_done=False)
+    task = Task.create(
+        title=title,
+        owner=owner,
+        is_work=is_work,
+        group=group_id,
+        start_time=start,
+        end_date=end_date,
+        end_time=end_time,
+        overall=overall
+    )
 
     result = model_to_dict(task, exclude=[Task.group.owner, Task.owner])
 
     return json.dumps(result, default=str), 201
 
 
-@calendar_bp.route('/calendar/task/delete/<id>', methods=['DELETE'])
-def calendar_task_edit(id: int):
+@calendar_bp.route('/calendar/task/delete/<task_id>', methods=['DELETE'])
+def calendar_task_edit(task_id: int):
     try:
         owner = get_user(request)
     except (ValueError, IndexError, AttributeError):
         return json.dumps({"message": "Authorization required"}), 403
 
     try:
-        Task.delete().where((id == Task.id) & (Task.owner == owner)).execute()
+        Task.delete().where((task_id == Task.id) & (Task.owner == owner)).execute()
     except:
         return json.dumps({"message": "Task with such id not found"}), 404
 
-    return json.dumps({"message": "Task successfuly deleted"}), 200
+    return json.dumps({"message": "Task successfully deleted"}), 200
 
 
 @calendar_bp.route('/calendar/group/create', methods=['POST'])
@@ -197,20 +197,9 @@ def get_groups():
         return json.dumps({"message": "Authorization required"}), 403
 
     query = []
-    groups = [
-        {
-            'id': 1,
-            'title': 'Work',
-            'color': '#ff0000',
-        },
-        {
-            'id': 2,
-            'title': 'Leisure',
-            'color': '#00FF00',
-        }
-    ]
+    groups = []
 
-    for group in Group.select().where(Group.owner_id == owner):
+    for group in Group.select().where((Group.owner_id == owner) | (Group.owner_id == 1)):
         if group:
             group_dict = model_to_dict(group)
             groups.append({
@@ -221,7 +210,6 @@ def get_groups():
 
     query.append(groups)
     return json.dumps(query, default=str), 200
-
 
 
 @calendar_bp.route('/calendar/task/edit/<task_id>', methods=['PATCH'])
@@ -268,4 +256,3 @@ def done(task_id):
         (Task.id == task_id) & (Task.owner == owner)).execute()
 
     return json.dumps(task, default=str), 201
-
