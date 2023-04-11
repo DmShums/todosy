@@ -27,7 +27,7 @@ const sendAPI = async (url, method, headers = {}, body = {}) => {
 
         setInterval(() => {
             document.querySelector('.false-alert-block').classList.add("hidden");
-        }, 500000000);
+        }, 4000);
     }
 
     return [request, response];
