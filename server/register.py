@@ -1,11 +1,13 @@
 """Register module"""
 import json
 import os
+from datetime import datetime, timedelta
 
 import jwt
 from peewee import IntegrityError
 from flask import render_template, request, url_for, Blueprint
 
+from server.models.task import Task
 from server.models.user import User
 from server.utils import hash_password
 
@@ -26,6 +28,39 @@ def register_post():
             nickname=user_nickname,
             email=user_email,
             password=user_password
+        )
+
+        Task.create(
+            title="Example of task",
+            owner=user.id,
+            is_work=False,
+            group=2,
+            start_time="19:00",
+            end_date=datetime.now() - timedelta(days=1),
+            end_time="19:30",
+            overall=1800
+        )
+
+        Task.create(
+            title="Left-click to create task",
+            owner=user.id,
+            is_work=True,
+            group=1,
+            start_time="20:00",
+            end_date=datetime.now() - timedelta(days=1),
+            end_time="21:00",
+            overall=3600
+        )
+
+        Task.create(
+            title="Right-click to create group",
+            owner=user.id,
+            is_work=True,
+            group=1,
+            start_time="20:30",
+            end_date=datetime.now() + timedelta(days=1),
+            end_time="21:30",
+            overall=3600
         )
     except IntegrityError:
         return json.dumps({'message': "User with the same email already exist."}), 409

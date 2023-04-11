@@ -22,6 +22,11 @@ window.addEventListener('load', () => {
         const nickname = form.querySelector('#nickname').value;
         const email = form.querySelector('#email').value;
         const password = form.querySelector('#password').value;
+        const conf_password = form.querySelector('#confirm-pass').value;
+
+        if (password !== conf_password) {
+            return;
+        }
 
         form.classList.add('was-validated');
 
