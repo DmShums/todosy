@@ -15,9 +15,6 @@ const sendAPI = async (url, method, headers = {}, body = {}) => {
     }
 
     const request = await fetch(url, params)
-    if ((request.status).toString()[0] !== '2'){
-        document.querySelector('')
-    }
 
     return request;
 };
