@@ -18,15 +18,11 @@ window.addEventListener('load', () => {
 
         form.classList.add('was-validated');
 
-        const result = await sendAPI('/login', "POST", {},{email, password});
-        const response = await result.json();
+        const [result, response] = await sendAPI('/login', "POST", {},{email, password});
 
         if (result.ok) {
             localStorage.setItem(LOCAL_STORAGE_CELL, response.user);
             window.location.replace("/calendar");
-            return;
         }
-        
-        alert(response.message);
     });
 });

@@ -89,6 +89,8 @@ def calendar_group_create():
                          owner=owner)
 
     result = model_to_dict(group, exclude=[Group.owner.password])
+    result['message'] = "Group was successfully created."
+
     return json.dumps(result, default=str), 201
 
 

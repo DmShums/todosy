@@ -24,13 +24,12 @@ window.addEventListener('load', async () => {
 
 	// additional functions
     const getGroups = async () => {
-        const result = await sendAPI('/calendar/groups/get', 'GET', {
+        const [result, response] = await sendAPI('/calendar/groups/get', 'GET', {
 			Authorization: `Bearer ${TOKEN}`
 		});
 
 		if (result.ok) {
-            USER_GROUPS = await result.json();
-            USER_GROUPS = USER_GROUPS[0]
+            USER_GROUPS = response[0]
         }
     }
 	const setGroups = async () => {
@@ -127,13 +126,12 @@ window.addEventListener('load', async () => {
 				day.setDate(mondayDate.getDate() + idx)
 
 				const formattedDate = day.toISOString().split('T')[0]
-				const result = await sendAPI(`/calendar/day/get/${formattedDate}`, "GET", {
+				const [result, response] = await sendAPI(`/calendar/day/get/${formattedDate}`, "GET", {
 					Authorization: `Bearer ${TOKEN}`
 				});
 
 
 				if (result.ok) {
-					const response = await result.json();
 					const summary = document.querySelector('.summary')
 
 					summary.querySelector('.summary__title').textContent = `${day.toLocaleDateString()} summary`;
@@ -200,11 +198,10 @@ window.addEventListener('load', async () => {
 		const dayColumns = document.querySelectorAll('.table__date-tasks');
 		const balanceLine = document.querySelector('.controllers__balance-line');
 		const formattedDate = ACTIVE_DATE.toISOString().split('T')[0]
-		const tasks = await sendAPI(`/calendar/task/get/${formattedDate}`, "GET", {
+		const [_, result] = await sendAPI(`/calendar/task/get/${formattedDate}`, "GET", {
 			Authorization: `Bearer ${localStorage.getItem('user')}`
 		});
 
-		const result = await tasks.json();
         await getGroups();
 
 		dayColumns.forEach((column, index) => {
@@ -290,7 +287,7 @@ window.addEventListener('load', async () => {
 				task.querySelector(".task__heading").addEventListener('click', async (event) => {
 					event.stopPropagation();
 
-					const result = await sendAPI(`/calendar/task/done/${id}`, "PATCH", {
+					const [result, _] = await sendAPI(`/calendar/task/done/${id}`, "PATCH", {
 						Authorization: `Bearer ${TOKEN}`,
 					});
 
@@ -383,7 +380,7 @@ window.addEventListener('load', async () => {
 					"is_work": target.querySelector("#is_work").checked,
 				};
 
-				const response = await sendAPI(`/calendar/task/create`, "POST", {
+				const [response, _] = await sendAPI(`/calendar/task/create`, "POST", {
 					Authorization: `Bearer ${TOKEN}`
 				}, data);
 
@@ -415,7 +412,7 @@ window.addEventListener('load', async () => {
 					"color": target.querySelector("#group-color").value
 				};
 
-				const response = await sendAPI(`/calendar/group/create`, "POST", {
+				const [response, _] = await sendAPI(`/calendar/group/create`, "POST", {
 					Authorization: `Bearer ${localStorage.getItem('user')}`
 				}, data);
 
@@ -457,9 +454,4 @@ function returnBackInfo(){
 
 function popOutWindowInfo(){
 	document.querySelector('.info-popup').style = "display: block;"
-}
-
-// Close false-alert-block
-function closeAlertBlock(){
-	document.querySelector('.false-alert-block').style = "display: none;"
 }

@@ -69,3 +69,63 @@ input{
     color: white;
     background-color: #28282A !important;
 }
+
+
+
+/* failure popup */
+.false-alert-block{
+    display: flex;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    bottom: 7%;
+    z-index: 4;
+    width: 30%;
+    height: 5%;
+    background-color: rgb(255, 51, 51);
+    border-radius: 0.5em;
+    padding-left: 2%;
+    padding-right: 1%;
+    justify-content: space-between;
+    align-items: center;
+
+    visibility: visible;
+    opacity: 1;
+    transition: opacity .3s linear;
+}
+
+.false-alert-block.hidden {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s .5s, opacity .5s linear;
+}
+
+.success {
+    background-color: #28a745;
+}
+
+.failure {
+    background-color: #dc3545;
+}
+
+.btn-close {
+    padding: 0;
+    background: transparent;
+    border: 0;
+    width: auto;
+    height: auto;
+}
+
+.btn-close svg {
+    transition: all .3s;
+}
+
+.btn-close:hover svg {
+  width: 13px;
+  height: 13px;
+}
+
+.alert-p{
+  line-height: 1.5;
+  color: #555;
+}

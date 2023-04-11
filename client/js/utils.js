@@ -15,12 +15,22 @@ const sendAPI = async (url, method, headers = {}, body = {}) => {
     }
 
     const request = await fetch(url, params)
+    const response = await request.json();
 
-    if ((request.status).toString()[0] !== '2'){
-        document.querySelector('.false-alert-block').style = "display: flex;justify-content: space-between;align-items: center;"
+    if (response['message']) {
+        const first_number = Math.floor(request.status / 100)
+        document.querySelector('.false-alert-block').classList
+            .add((first_number === 2 || first_number === 1) ? 'success' : 'failure');
+
+        document.querySelector('.false-alert-block strong').textContent = response['message'];
+        document.querySelector('.false-alert-block').classList.remove("hidden");
+
+        setInterval(() => {
+            document.querySelector('.false-alert-block').classList.add("hidden");
+        }, 500000000);
     }
 
-    return request;
+    return [request, response];
 };
 
 Date.prototype.isSameDateAs = function(pDate) {
@@ -46,4 +56,9 @@ const deleteBySelector = (selector) => {
     if (prevCreate) {
         prevCreate.parentElement.removeChild(prevCreate);
     }
+}
+
+// Close false-alert-block
+function closeAlertBlock(){
+	document.querySelector('.false-alert-block').classList.add('.hidden');
 }

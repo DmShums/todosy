@@ -25,16 +25,12 @@ window.addEventListener('load', () => {
 
         form.classList.add('was-validated');
 
-        const result = await sendAPI('/register', "POST", {},{nickname, email, password});
-        const response = await result.json();
+        const [result, response] = await sendAPI('/register', "POST", {},{nickname, email, password});
 
         if (result.ok) {
             console.log("success")
             localStorage.setItem(LOCAL_STORAGE_CELL, response.user);
             window.location.replace("/calendar");
-            return;
         }
-
-        alert(response.message);
     });
 });
