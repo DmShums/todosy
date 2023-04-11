@@ -458,3 +458,8 @@ function returnBackInfo(){
 function popOutWindowInfo(){
 	document.querySelector('.info-popup').style = "display: block;"
 }
+
+// Close false-alert-block
+function closeAlertBlock(){
+	document.querySelector('.false-alert-block').style = "display: none;"
+}

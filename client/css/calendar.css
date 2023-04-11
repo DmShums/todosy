@@ -845,3 +845,32 @@ label {
   width: 14px;
   height: 14px;
 }
+
+
+/* failure popup */
+.false-alert-block{
+  display: none;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  bottom: 7%;
+  z-index: 4;
+  width: 30%;
+  height: 5%;
+  background-color: rgb(255, 51, 51);
+  border: solid 1px red;
+  border-radius: 0.5em;
+  padding-left: 2%;
+  padding-right: 1%;
+}
+
+
+.btn-close:hover {
+  width: 13px;
+  height: 13px;
+}
+
+.alert-p{
+  line-height: 1.5;
+  color: #555;
+}

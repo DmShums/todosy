@@ -16,6 +16,10 @@ const sendAPI = async (url, method, headers = {}, body = {}) => {
 
     const request = await fetch(url, params)
 
+    if ((request.status).toString()[0] !== '2'){
+        document.querySelector('.false-alert-block').style = "display: flex;justify-content: space-between;align-items: center;"
+    }
+
     return request;
 };
 
