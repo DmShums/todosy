@@ -1,0 +1,103 @@
+body {
+    background-color: #4B4A52 !important;
+    color: #D4D4D4 !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 16px !important;
+    line-height: 24px !important;
+    width: 300px;
+    padding: 0;
+    margin: 0;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+button {
+    cursor: pointer;
+}
+
+.header {
+    height: 50px;
+    background: #28282A !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+.hidden {
+    display: none;
+}
+form {
+    margin:auto;
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+}
+.form-label {
+    margin-bottom: 0.5rem;
+    display: inline-block;
+    color: #D4D4D4 !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 1rem !important;
+    line-height: 24px !important;
+}
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 0.3rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #FFF;
+    background-clip: padding-box;
+    border: 1px solid #dee2e6;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0.3rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    margin-bottom: 1rem;
+}
+
+.register-p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.link-primary {
+    color: #0d6efd!important;
+}
+
+.btn {
+    margin-top: 20px;
+    width: 40%;
+    color: #28282A;
+    background-color: #E7CFB5 !important;
+    border: 0;
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    margin-bottom: 30px;
+    border-radius: 0.375rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.btn:hover {
+    color: white;
+    background-color: #28282A !important;
+}
+
+.sync__wrapper {
+    width: 100%;
+}
+
+.btn-sync {
+    display: block;
+    width: 60%;
+    margin: 40px auto;
+}

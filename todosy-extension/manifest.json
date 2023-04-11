@@ -1,0 +1,22 @@
+{
+  "name": "Todosy extention",
+  "version": "1.0",
+  "description": "Sync deadlines from Moodle",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/icon-16.png"
+    }
+  },
+  "icons": {
+    "16": "images/icon-16.png",
+    "32": "images/icon-32.png",
+    "192": "images/icon-192.png",
+    "512": "images/icon-512.png"
+  },
+  "manifest_version": 3
+}

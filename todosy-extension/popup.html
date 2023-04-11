@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <header class="header">
+      Todosy
+    </header>
+
+    <form id="login">
+      <div>
+        <label for="email" class="form-label">Email address</label>
+        <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" name="password" required>
+     </div>
+
+     <p class="register-p"> Not registered yet? <a target="_blank" href="http://localhost:5050/register" class="link-primary">Sign up</a></p>
+     <button type="submit" class="btn" id="submit-btn">Submit</button>
+    </form>
+
+
+    <div class="sync__wrapper">
+      <button id="sync" class="hidden btn btn-sync">Sync deadlines</button>
+    </div>
+  
+    <script src="popup.js"></script>
+  </body>
+</html>
