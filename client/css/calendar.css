@@ -701,9 +701,9 @@ label {
   position: absolute;
   right: 3%;
   font-weight: 500;
-    border: 0;
-    background: transparent;
-    color: #DADADA;
+  border: 0;
+  background: transparent;
+  color: #DADADA;
 }
 
 .log-out:hover{
@@ -776,4 +776,67 @@ label {
         position: relative;
         flex-shrink: 0;
     }
+}
+
+/* info button styles */
+
+.info{
+    position: absolute;
+    z-index: 3;
+    /* top: 3%; */
+    left: 1.5%;
+    background-color: transparent;
+    border: 0;
+    padding: 0;
+}
+
+.info-popup{
+  z-index: 3;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  height: 50%;
+  background-color: #302F34;
+  border-radius: 8px;
+  overflow: scroll;
+  box-shadow: 1px 5px 10px rgba(0, 0, 0, 0.4);
+  display: none;
+}
+
+
+.info__header{
+  background-color: #28282A;
+  padding: 5px 10px;
+  padding-left: 5%;
+  padding-right: 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info__body {
+  padding-left: 3%;
+  padding-right: 3%;
+}
+
+.info__body li {
+    margin-bottom: 7px;
+}
+
+.close-info {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.close-info svg {
+    transition: all .2s;
+}
+
+
+.close-info:hover svg {
+  width: 14px;
+  height: 14px;
 }
