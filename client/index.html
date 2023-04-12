@@ -4,32 +4,32 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename="/apple-touch-icon.png") }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename="/favicon-32x32.png") }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename="/favicon-16x16.png") }}">
-    <link rel="manifest" href="{{ url_for('static', filename="/site.webmanifest") }}">
-    <link rel="mask-icon" href="{{ url_for('static', filename="/safari-pinned-tab.svg") }}" color="#5bbad5">
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#ffffff">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{url_for('static', filename='./css/index.css')}}">
+    <link rel="stylesheet" href="../src/static/styles/index.css">
     <title>Todosy</title>
 </head>
 <body>
     <header class="header">
         Todosy
-    </header>
-
-    <main class="content">
+        </header>
+        <br><br>
+        <br><br>
+        <br><br>
+        <br><br>
         <h1>Welcome!</h1>
-        <p>Structurize your studies and leisure with our planner.</p>
-        <p>It can help you not to forget about your deadlines, meetings and also find time for rest.</p>
 
-        <a class="btn btn-light" id="log_in" href='/login'>Log in</a>
-        <a class="btn btn-light" id="sign_up" href='/register'>Sign up</a>
-    </main>
+        <br><br>
+        <main class="content">
+          <p>Structurize your studies and leisure with our planner.</p>
+          <p>It can help you not to forget about your deadlines, meetings and also find time for rest.</p>
+          <span style="display: inline;">
+                <button type="submit" class="btn btn-light" id="log_in" onclick="window.location.href='../src/templates/login.html'">
+                    Log in
+                </button>
+            <button type="submit" class="btn btn-light" id="sign_up"  onclick="window.location.href='../src/templates/register.html'">Sign up</button>
+          </span>
+        </main>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    <script src="{{ url_for('static', filename='./js/index.js') }}"></script>
 </body>
 </html>
