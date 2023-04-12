@@ -112,8 +112,7 @@ window.addEventListener('load', async () => {
 				heading.classList.add('table__heading--today');
 			}
 
-			// show info on heading click
-			heading.addEventListener('click', async (event) => {
+			const eventListener = async (event) => {
 				event.preventDefault();
 				const curr = new Date(active_date.getTime()); // get current date
 
@@ -190,7 +189,11 @@ window.addEventListener('load', async () => {
 						}
 					});
 				}
-			});
+			};
+
+			// show info on heading click
+			heading.removeEventListener('click', eventListener);
+			heading.addEventListener('click', eventListener);
 		});
 
 

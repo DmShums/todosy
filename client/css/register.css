@@ -88,7 +88,6 @@ input{
     padding-right: 1%;
     justify-content: space-between;
     align-items: center;
-
     visibility: visible;
     opacity: 1;
     transition: opacity .3s linear;
