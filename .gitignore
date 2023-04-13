@@ -130,6 +130,7 @@ dmypy.json
 
 # editor
 .vscode/
+.idea/
 
 # operation systems
 .DS_Store

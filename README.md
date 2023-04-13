@@ -1,8 +1,9 @@
 # todosy
 
-## Installation and starting for development
+You can try this app by [clicking here](https://todosy.pythonanywhere.com).
+![alt text](example.png)
 
-## Back-End
+## Installation and starting
 
 Download [MySQL](https://www.mysql.com/) and install it.
 
